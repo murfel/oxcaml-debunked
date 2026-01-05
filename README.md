@@ -4,6 +4,9 @@
 - https://youtu.be/kuoT6CrSY70?si=S1aEHfuNffIs_6Je&t=233
 - https://dl.acm.org/doi/epdf/10.1145/3704859
 
+> The interaction between portable and non-portable functions, which stemmed from a confusion around the fact that **Base functions are annotated with modes, but the OCaml stdlib is not**. The answer right now is to **always use Base with OxCaml**.
+https://anil.recoil.org/notes/icfp25-oxcaml
+
 ## Run
 Run with
 ```

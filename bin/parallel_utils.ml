@@ -7,10 +7,10 @@ let run_one_test ~(f : Parallel.t @ local -> 'a) : 'a =
 ;;
 
 
-let rec count_if lst pred =
+let rec count_if (lst @ contended) ~f =
   match lst with
     | [] -> 0
     | x :: xs ->
-      let acc = count_if xs pred in
-        if pred x then 1 + acc else acc
+      let acc = count_if xs ~f in
+        if f x then 1 + acc else acc
 ;;
