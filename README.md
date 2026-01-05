@@ -1,7 +1,7 @@
 Run with
 ```
 dune exec bin/add4.exe
-dune exec bin/average_par.exe
+dune exec bin/average.exe
 ```
 
 Also
