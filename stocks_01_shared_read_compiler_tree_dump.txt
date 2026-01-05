@@ -1,0 +1,1115 @@
+[
+  structure_item (bin/parallel_utils.ml[1,0+0]..bin/parallel_utils.ml[6,222+8])
+    Tstr_value Nonrec
+    [
+      <def>
+        pattern (bin/parallel_utils.ml[1,0+4]..bin/parallel_utils.ml[1,0+16])
+          Tpat_var "run_one_test/285"
+          sort value
+          value_mode global,many,nonportable,forkable,unyielding,stateful;imply(unique,uncontended,read_write)(modevar#3[aliased,contended,immutable .. unique,uncontended,read_write])
+        expression (bin/parallel_utils.ml[1,0+17]..bin/parallel_utils.ml[6,222+8]) ghost
+          Texp_function
+          alloc_mode global,many,nonportable,forkable,unyielding,stateful;id(modevar#5[aliased,contended,immutable .. unique,uncontended,read_write])
+          [
+            Labelled "f"
+            Param_pat
+              pattern (bin/parallel_utils.ml[1,0+19]..bin/parallel_utils.ml[1,0+20])
+                extra
+                  Tpat_extra_constraint
+                  core_type (bin/parallel_utils.ml[1,0+23]..bin/parallel_utils.ml[1,0+47])
+                    Ttyp_arrow
+                    Nolabel
+                    core_type (bin/parallel_utils.ml[1,0+23]..bin/parallel_utils.ml[1,0+33])
+                      Ttyp_constr "Parallel!.t"
+                      []
+                    core_type (bin/parallel_utils.ml[1,0+45]..bin/parallel_utils.ml[1,0+47])
+                      Ttyp_var a
+                      None
+                Tpat_var "f/302"
+                sort value
+                value_mode global,many,portable,forkable,unyielding,stateful;unique,uncontended,read_write
+          ]
+          Tfunction_body
+            expression (bin/parallel_utils.ml[2,56+2]..bin/parallel_utils.ml[6,222+8])
+              extra
+                Texp_constraint
+                core_type (bin/parallel_utils.ml[1,0+51]..bin/parallel_utils.ml[1,0+53])
+                  Ttyp_var a
+                  None
+              Texp_letmodule "Scheduler/303"
+              module_expr (bin/parallel_utils.ml[2,56+25]..bin/parallel_utils.ml[2,56+43])
+                Tmod_ident "Parallel_scheduler!"
+              expression (bin/parallel_utils.ml[3,103+2]..bin/parallel_utils.ml[6,222+8])
+                Texp_let Nonrec
+                [
+                  <def>
+                    pattern (bin/parallel_utils.ml[3,103+6]..bin/parallel_utils.ml[3,103+15])
+                      Tpat_var "scheduler/304"
+                      sort value
+                      value_mode global,many,nonportable,forkable,unyielding,stateful;aliased,uncontended,read_write
+                    expression (bin/parallel_utils.ml[3,103+18]..bin/parallel_utils.ml[3,103+37])
+                      Texp_apply
+                      apply_mode Default
+                      locality_mode global
+                      expression (bin/parallel_utils.ml[3,103+18]..bin/parallel_utils.ml[3,103+34])
+                        Texp_ident "Scheduler/303.create"
+                      [
+                        <arg>
+                          Optional "max_domains"
+                          expression (_none_[0,0+-1].._none_[0,0+-1]) ghost
+                            Texp_construct "None"
+                            []
+                        <arg>
+                          Nolabel
+                          expression (bin/parallel_utils.ml[3,103+35]..bin/parallel_utils.ml[3,103+37])
+                            Texp_construct "()"
+                            []
+                      ]
+                ]
+                expression (bin/parallel_utils.ml[4,144+2]..bin/parallel_utils.ml[6,222+8])
+                  Texp_let Nonrec
+                  [
+                    <def>
+                      pattern (bin/parallel_utils.ml[4,144+6]..bin/parallel_utils.ml[4,144+12])
+                        Tpat_var "result/1335"
+                        sort value
+                        value_mode global,many,nonportable,forkable,unyielding,stateful;imply(unique,uncontended,read_write)(modevar#11[aliased,contended,immutable .. aliased,uncontended,read_write])
+                      expression (bin/parallel_utils.ml[4,144+15]..bin/parallel_utils.ml[4,144+46])
+                        Texp_apply
+                        apply_mode Default
+                        locality_mode global
+                        expression (bin/parallel_utils.ml[4,144+15]..bin/parallel_utils.ml[4,144+33])
+                          Texp_ident "Scheduler/303.parallel"
+                        [
+                          <arg>
+                            Nolabel
+                            expression (bin/parallel_utils.ml[4,144+34]..bin/parallel_utils.ml[4,144+43])
+                              Texp_ident "scheduler/304"
+                          <arg>
+                            Labelled "f"
+                            expression (bin/parallel_utils.ml[4,144+45]..bin/parallel_utils.ml[4,144+46])
+                              Texp_ident "f/302"
+                        ]
+                  ]
+                  expression (bin/parallel_utils.ml[5,194+2]..bin/parallel_utils.ml[6,222+8])
+                    Texp_sequence
+                    expression (bin/parallel_utils.ml[5,194+2]..bin/parallel_utils.ml[5,194+26])
+                      Texp_apply
+                      apply_mode Default
+                      locality_mode global
+                      expression (bin/parallel_utils.ml[5,194+2]..bin/parallel_utils.ml[5,194+16])
+                        Texp_ident "Scheduler/303.stop"
+                      [
+                        <arg>
+                          Nolabel
+                          expression (bin/parallel_utils.ml[5,194+17]..bin/parallel_utils.ml[5,194+26])
+                            Texp_ident "scheduler/304"
+                      ]
+                    value
+                    expression (bin/parallel_utils.ml[6,222+2]..bin/parallel_utils.ml[6,222+8])
+                      Texp_ident "result/1335"
+    ]
+  structure_item (bin/parallel_utils.ml[10,236+0]..bin/parallel_utils.ml[15,348+39])
+    Tstr_value Rec
+    [
+      <def_rec>
+        pattern (bin/parallel_utils.ml[10,236+8]..bin/parallel_utils.ml[10,236+16])
+          Tpat_var "count_if/1349"
+          sort value
+          value_mode global,many,portable,forkable,unyielding,stateful;imply(unique,uncontended,read_write)(modevar#29[aliased,contended,immutable .. unique,uncontended,read_write])
+        expression (bin/parallel_utils.ml[10,236+17]..bin/parallel_utils.ml[15,348+39]) ghost
+          Texp_function
+          alloc_mode global,many,portable,forkable,unyielding,stateful;id(modevar#33[aliased,contended,immutable .. unique,uncontended,read_write])
+          [
+            Nolabel
+            Param_pat
+              pattern (bin/parallel_utils.ml[10,236+17]..bin/parallel_utils.ml[10,236+20])
+                Tpat_var "lst/1350"
+                sort value
+                value_mode global,many,nonportable,forkable,unyielding,stateful;aliased,uncontended,read_write
+            Nolabel
+            Param_pat
+              pattern (bin/parallel_utils.ml[10,236+21]..bin/parallel_utils.ml[10,236+25])
+                Tpat_var "pred/1351"
+                sort value
+                value_mode global,many,nonportable,forkable,unyielding,stateful;aliased,uncontended,read_write
+          ]
+          Tfunction_body
+            expression (bin/parallel_utils.ml[11,264+2]..bin/parallel_utils.ml[15,348+39])
+              Texp_match
+              expression (bin/parallel_utils.ml[11,264+8]..bin/parallel_utils.ml[11,264+11])
+                Texp_ident "lst/1350"
+              value
+              [
+                <case>
+                  pattern (bin/parallel_utils.ml[12,281+6]..bin/parallel_utils.ml[12,281+8])
+                    Tpat_value
+                    pattern (bin/parallel_utils.ml[12,281+6]..bin/parallel_utils.ml[12,281+8])
+                      Tpat_construct "[]"
+                      []
+                      None
+                  expression (bin/parallel_utils.ml[12,281+12]..bin/parallel_utils.ml[12,281+13])
+                    Texp_constant Const_int 0
+                <case>
+                  pattern (bin/parallel_utils.ml[13,295+6]..bin/parallel_utils.ml[13,295+13])
+                    Tpat_value
+                    pattern (bin/parallel_utils.ml[13,295+6]..bin/parallel_utils.ml[13,295+13])
+                      Tpat_construct "::"
+                      [
+                        pattern (bin/parallel_utils.ml[13,295+6]..bin/parallel_utils.ml[13,295+7])
+                          Tpat_var "x/1352"
+                          sort value
+                          value_mode global,many,nonportable,forkable,unyielding,stateful;meet(unique,uncontended,read_write,imply(unique,uncontended,read_write)(modevar#37[aliased,contended,immutable .. aliased,uncontended,read_write]))
+                        pattern (bin/parallel_utils.ml[13,295+11]..bin/parallel_utils.ml[13,295+13])
+                          Tpat_var "xs/1353"
+                          sort value
+                          value_mode global,many,nonportable,forkable,unyielding,stateful;meet(unique,uncontended,read_write,imply(unique,uncontended,read_write)(modevar#37[aliased,contended,immutable .. aliased,uncontended,read_write]))
+                      ]
+                      None
+                  expression (bin/parallel_utils.ml[14,312+6]..bin/parallel_utils.ml[15,348+39])
+                    Texp_let Nonrec
+                    [
+                      <def>
+                        pattern (bin/parallel_utils.ml[14,312+10]..bin/parallel_utils.ml[14,312+13])
+                          Tpat_var "acc/1354"
+                          sort value
+                          value_mode global,many,nonportable,forkable,unyielding,stateful;imply(unique,uncontended,read_write)(modevar#39[aliased,contended,immutable .. aliased,uncontended,read_write])
+                        expression (bin/parallel_utils.ml[14,312+16]..bin/parallel_utils.ml[14,312+32])
+                          Texp_apply
+                          apply_mode Default
+                          locality_mode global
+                          expression (bin/parallel_utils.ml[14,312+16]..bin/parallel_utils.ml[14,312+24])
+                            Texp_ident "count_if/1349"
+                          [
+                            <arg>
+                              Nolabel
+                              expression (bin/parallel_utils.ml[14,312+25]..bin/parallel_utils.ml[14,312+27])
+                                Texp_ident "xs/1353"
+                            <arg>
+                              Nolabel
+                              expression (bin/parallel_utils.ml[14,312+28]..bin/parallel_utils.ml[14,312+32])
+                                Texp_ident "pred/1351"
+                          ]
+                    ]
+                    expression (bin/parallel_utils.ml[15,348+8]..bin/parallel_utils.ml[15,348+39])
+                      Texp_ifthenelse
+                      expression (bin/parallel_utils.ml[15,348+11]..bin/parallel_utils.ml[15,348+17])
+                        Texp_apply
+                        apply_mode Default
+                        locality_mode global
+                        expression (bin/parallel_utils.ml[15,348+11]..bin/parallel_utils.ml[15,348+15])
+                          Texp_ident "pred/1351"
+                        [
+                          <arg>
+                            Nolabel
+                            expression (bin/parallel_utils.ml[15,348+16]..bin/parallel_utils.ml[15,348+17])
+                              Texp_ident "x/1352"
+                        ]
+                      expression (bin/parallel_utils.ml[15,348+23]..bin/parallel_utils.ml[15,348+30])
+                        Texp_apply
+                        apply_mode Tail
+                        locality_mode global
+                        expression (bin/parallel_utils.ml[15,348+25]..bin/parallel_utils.ml[15,348+26])
+                          Texp_ident "Stdlib!.+"
+                        [
+                          <arg>
+                            Nolabel
+                            expression (bin/parallel_utils.ml[15,348+23]..bin/parallel_utils.ml[15,348+24])
+                              Texp_constant Const_int 1
+                          <arg>
+                            Nolabel
+                            expression (bin/parallel_utils.ml[15,348+27]..bin/parallel_utils.ml[15,348+30])
+                              Texp_ident "acc/1354"
+                        ]
+                      Some
+                        expression (bin/parallel_utils.ml[15,348+36]..bin/parallel_utils.ml[15,348+39])
+                          Texp_ident "acc/1354"
+              ]
+    ]
+]
+
+[]
+
+[
+  structure_item (bin/parallel_utils.ml[1,0+0]..bin/parallel_utils.ml[6,222+8])
+    Tstr_value Nonrec
+    [
+      <def>
+        pattern (bin/parallel_utils.ml[1,0+4]..bin/parallel_utils.ml[1,0+16])
+          Tpat_var "run_one_test/285"
+          sort value
+          value_mode global,many,nonportable,forkable,unyielding,stateful;imply(unique,uncontended,read_write)(modevar#3[aliased,contended,immutable .. unique,uncontended,read_write])
+        expression (bin/parallel_utils.ml[1,0+17]..bin/parallel_utils.ml[6,222+8]) ghost
+          Texp_function
+          alloc_mode global,many,nonportable,forkable,unyielding,stateful;id(modevar#5[aliased,contended,immutable .. unique,uncontended,read_write])
+          [
+            Labelled "f"
+            Param_pat
+              pattern (bin/parallel_utils.ml[1,0+19]..bin/parallel_utils.ml[1,0+20])
+                extra
+                  Tpat_extra_constraint
+                  core_type (bin/parallel_utils.ml[1,0+23]..bin/parallel_utils.ml[1,0+47])
+                    Ttyp_arrow
+                    Nolabel
+                    core_type (bin/parallel_utils.ml[1,0+23]..bin/parallel_utils.ml[1,0+33])
+                      Ttyp_constr "Parallel!.t"
+                      []
+                    core_type (bin/parallel_utils.ml[1,0+45]..bin/parallel_utils.ml[1,0+47])
+                      Ttyp_var a
+                      None
+                Tpat_var "f/302"
+                sort value
+                value_mode map_comonadic(local_to_regional)(modevar#6[global,many,portable,forkable,unyielding,stateful .. global,once,portable,forkable,unyielding,stateful]);unique,uncontended,read_write
+          ]
+          Tfunction_body
+            expression (bin/parallel_utils.ml[2,56+2]..bin/parallel_utils.ml[6,222+8])
+              extra
+                Texp_constraint
+                core_type (bin/parallel_utils.ml[1,0+51]..bin/parallel_utils.ml[1,0+53])
+                  Ttyp_var a
+                  None
+              Texp_letmodule "Scheduler/303"
+              module_expr (bin/parallel_utils.ml[2,56+25]..bin/parallel_utils.ml[2,56+43])
+                Tmod_ident "Parallel_scheduler!"
+              expression (bin/parallel_utils.ml[3,103+2]..bin/parallel_utils.ml[6,222+8])
+                Texp_let Nonrec
+                [
+                  <def>
+                    pattern (bin/parallel_utils.ml[3,103+6]..bin/parallel_utils.ml[3,103+15])
+                      Tpat_var "scheduler/304"
+                      sort value
+                      value_mode global,many,nonportable,forkable,unyielding,stateful;aliased,uncontended,read_write
+                    expression (bin/parallel_utils.ml[3,103+18]..bin/parallel_utils.ml[3,103+37])
+                      Texp_apply
+                      apply_mode Default
+                      locality_mode global
+                      expression (bin/parallel_utils.ml[3,103+18]..bin/parallel_utils.ml[3,103+34])
+                        Texp_ident "Scheduler/303.create"
+                      [
+                        <arg>
+                          Optional "max_domains"
+                          expression (_none_[0,0+-1].._none_[0,0+-1]) ghost
+                            Texp_construct "None"
+                            []
+                        <arg>
+                          Nolabel
+                          expression (bin/parallel_utils.ml[3,103+35]..bin/parallel_utils.ml[3,103+37])
+                            Texp_construct "()"
+                            []
+                      ]
+                ]
+                expression (bin/parallel_utils.ml[4,144+2]..bin/parallel_utils.ml[6,222+8])
+                  Texp_let Nonrec
+                  [
+                    <def>
+                      pattern (bin/parallel_utils.ml[4,144+6]..bin/parallel_utils.ml[4,144+12])
+                        Tpat_var "result/1335"
+                        sort value
+                        value_mode global,many,nonportable,forkable,unyielding,stateful;imply(unique,uncontended,read_write)(modevar#11[aliased,contended,immutable .. aliased,uncontended,read_write])
+                      expression (bin/parallel_utils.ml[4,144+15]..bin/parallel_utils.ml[4,144+46])
+                        Texp_apply
+                        apply_mode Default
+                        locality_mode global
+                        expression (bin/parallel_utils.ml[4,144+15]..bin/parallel_utils.ml[4,144+33])
+                          Texp_ident "Scheduler/303.parallel"
+                        [
+                          <arg>
+                            Nolabel
+                            expression (bin/parallel_utils.ml[4,144+34]..bin/parallel_utils.ml[4,144+43])
+                              Texp_ident "scheduler/304"
+                          <arg>
+                            Labelled "f"
+                            expression (bin/parallel_utils.ml[4,144+45]..bin/parallel_utils.ml[4,144+46])
+                              Texp_ident "f/302"
+                        ]
+                  ]
+                  expression (bin/parallel_utils.ml[5,194+2]..bin/parallel_utils.ml[6,222+8])
+                    Texp_sequence
+                    expression (bin/parallel_utils.ml[5,194+2]..bin/parallel_utils.ml[5,194+26])
+                      Texp_apply
+                      apply_mode Default
+                      locality_mode global
+                      expression (bin/parallel_utils.ml[5,194+2]..bin/parallel_utils.ml[5,194+16])
+                        Texp_ident "Scheduler/303.stop"
+                      [
+                        <arg>
+                          Nolabel
+                          expression (bin/parallel_utils.ml[5,194+17]..bin/parallel_utils.ml[5,194+26])
+                            Texp_ident "scheduler/304"
+                      ]
+                    value
+                    expression (bin/parallel_utils.ml[6,222+2]..bin/parallel_utils.ml[6,222+8])
+                      Texp_ident "result/1335"
+    ]
+  structure_item (bin/parallel_utils.ml[10,236+0]..bin/parallel_utils.ml[15,348+39])
+    Tstr_value Rec
+    [
+      <def_rec>
+        pattern (bin/parallel_utils.ml[10,236+8]..bin/parallel_utils.ml[10,236+16])
+          Tpat_var "count_if/1349"
+          sort value
+          value_mode global,many,portable,forkable,unyielding,stateful;imply(unique,uncontended,read_write)(modevar#29[aliased,contended,immutable .. unique,uncontended,read_write])
+        expression (bin/parallel_utils.ml[10,236+17]..bin/parallel_utils.ml[15,348+39]) ghost
+          Texp_function
+          alloc_mode global,many,portable,forkable,unyielding,stateful;id(modevar#33[aliased,contended,immutable .. unique,uncontended,read_write])
+          [
+            Nolabel
+            Param_pat
+              pattern (bin/parallel_utils.ml[10,236+17]..bin/parallel_utils.ml[10,236+20])
+                Tpat_var "lst/1350"
+                sort value
+                value_mode global,many,nonportable,forkable,unyielding,stateful;aliased,uncontended,read_write
+            Nolabel
+            Param_pat
+              pattern (bin/parallel_utils.ml[10,236+21]..bin/parallel_utils.ml[10,236+25])
+                Tpat_var "pred/1351"
+                sort value
+                value_mode map_comonadic(local_to_regional)(modevar#2e[global,many,nonportable,forkable,unyielding,stateful .. local,many,nonportable,unforkable,yielding,stateful]);imply(unique,uncontended,read_write)(modevar#2f[aliased,contended,immutable .. aliased,uncontended,read_write])
+          ]
+          Tfunction_body
+            expression (bin/parallel_utils.ml[11,264+2]..bin/parallel_utils.ml[15,348+39])
+              Texp_match
+              expression (bin/parallel_utils.ml[11,264+8]..bin/parallel_utils.ml[11,264+11])
+                Texp_ident "lst/1350"
+              value
+              [
+                <case>
+                  pattern (bin/parallel_utils.ml[12,281+6]..bin/parallel_utils.ml[12,281+8])
+                    Tpat_value
+                    pattern (bin/parallel_utils.ml[12,281+6]..bin/parallel_utils.ml[12,281+8])
+                      Tpat_construct "[]"
+                      []
+                      None
+                  expression (bin/parallel_utils.ml[12,281+12]..bin/parallel_utils.ml[12,281+13])
+                    Texp_constant Const_int 0
+                <case>
+                  pattern (bin/parallel_utils.ml[13,295+6]..bin/parallel_utils.ml[13,295+13])
+                    Tpat_value
+                    pattern (bin/parallel_utils.ml[13,295+6]..bin/parallel_utils.ml[13,295+13])
+                      Tpat_construct "::"
+                      [
+                        pattern (bin/parallel_utils.ml[13,295+6]..bin/parallel_utils.ml[13,295+7])
+                          Tpat_var "x/1352"
+                          sort value
+                          value_mode global,many,nonportable,forkable,unyielding,stateful;aliased,uncontended,read_write
+                        pattern (bin/parallel_utils.ml[13,295+11]..bin/parallel_utils.ml[13,295+13])
+                          Tpat_var "xs/1353"
+                          sort value
+                          value_mode global,many,nonportable,forkable,unyielding,stateful;aliased,uncontended,read_write
+                      ]
+                      None
+                  expression (bin/parallel_utils.ml[14,312+6]..bin/parallel_utils.ml[15,348+39])
+                    Texp_let Nonrec
+                    [
+                      <def>
+                        pattern (bin/parallel_utils.ml[14,312+10]..bin/parallel_utils.ml[14,312+13])
+                          Tpat_var "acc/1354"
+                          sort value
+                          value_mode meet(local,once,nonportable,unforkable,yielding,stateful)(modevar#38[global,many,portable,forkable,unyielding,stateless .. global,once,nonportable,unforkable,yielding,stateful]);imply(unique,uncontended,read_write)(modevar#39[aliased,contended,immutable .. unique,uncontended,read_write])
+                        expression (bin/parallel_utils.ml[14,312+16]..bin/parallel_utils.ml[14,312+32])
+                          Texp_apply
+                          apply_mode Default
+                          locality_mode global
+                          expression (bin/parallel_utils.ml[14,312+16]..bin/parallel_utils.ml[14,312+24])
+                            Texp_ident "count_if/1349"
+                          [
+                            <arg>
+                              Nolabel
+                              expression (bin/parallel_utils.ml[14,312+25]..bin/parallel_utils.ml[14,312+27])
+                                Texp_ident "xs/1353"
+                            <arg>
+                              Nolabel
+                              expression (bin/parallel_utils.ml[14,312+28]..bin/parallel_utils.ml[14,312+32])
+                                Texp_ident "pred/1351"
+                          ]
+                    ]
+                    expression (bin/parallel_utils.ml[15,348+8]..bin/parallel_utils.ml[15,348+39])
+                      Texp_ifthenelse
+                      expression (bin/parallel_utils.ml[15,348+11]..bin/parallel_utils.ml[15,348+17])
+                        Texp_apply
+                        apply_mode Default
+                        locality_mode proj_locality(modevar#44[global,many,portable,forkable,unyielding,stateless .. local,once,nonportable,unforkable,yielding,stateful])
+                        expression (bin/parallel_utils.ml[15,348+11]..bin/parallel_utils.ml[15,348+15])
+                          Texp_ident "pred/1351"
+                        [
+                          <arg>
+                            Nolabel
+                            expression (bin/parallel_utils.ml[15,348+16]..bin/parallel_utils.ml[15,348+17])
+                              Texp_ident "x/1352"
+                        ]
+                      expression (bin/parallel_utils.ml[15,348+23]..bin/parallel_utils.ml[15,348+30])
+                        Texp_apply
+                        apply_mode Tail
+                        locality_mode global
+                        expression (bin/parallel_utils.ml[15,348+25]..bin/parallel_utils.ml[15,348+26])
+                          Texp_ident "Stdlib!.+"
+                        [
+                          <arg>
+                            Nolabel
+                            expression (bin/parallel_utils.ml[15,348+23]..bin/parallel_utils.ml[15,348+24])
+                              Texp_constant Const_int 1
+                          <arg>
+                            Nolabel
+                            expression (bin/parallel_utils.ml[15,348+27]..bin/parallel_utils.ml[15,348+30])
+                              Texp_ident "acc/1354"
+                        ]
+                      Some
+                        expression (bin/parallel_utils.ml[15,348+36]..bin/parallel_utils.ml[15,348+39])
+                          Texp_ident "acc/1354"
+              ]
+    ]
+]
+
+[
+  structure_item (bin/stocks_01_shared_read.ml[1,0+0]..bin/stocks_01_shared_read.ml[1,0+9])
+    Tstr_open Fresh
+    module_expr (bin/stocks_01_shared_read.ml[1,0+5]..bin/stocks_01_shared_read.ml[1,0+9])
+      Tmod_ident "Core!"
+  structure_item (bin/stocks_01_shared_read.ml[3,11+0]..bin/stocks_01_shared_read.ml[10,136+3])
+    Tstr_module
+    Stock/1688
+      module_expr (bin/stocks_01_shared_read.ml[3,11+15]..bin/stocks_01_shared_read.ml[10,136+3])
+        Tmod_structure
+        [
+          structure_item (bin/stocks_01_shared_read.ml[4,33+2]..bin/stocks_01_shared_read.ml[6,64+5])
+            Tstr_type Rec
+            [
+              type_declaration t/1678 (bin/stocks_01_shared_read.ml[4,33+2]..bin/stocks_01_shared_read.ml[6,64+5])
+                ptype_params =
+                  []
+                ptype_cstrs =
+                  []
+                ptype_kind =
+                  Ttype_record
+                    [
+                      (bin/stocks_01_shared_read.ml[5,44+6]..bin/stocks_01_shared_read.ml[5,44+19])
+                        Immutable
+                        price/1679                        core_type (bin/stocks_01_shared_read.ml[5,44+14]..bin/stocks_01_shared_read.ml[5,44+19])
+                          Ttyp_poly
+                          core_type (bin/stocks_01_shared_read.ml[5,44+14]..bin/stocks_01_shared_read.ml[5,44+19])
+                            Ttyp_constr "float/4!"
+                            []
+                    ]
+                ptype_private = Public
+                ptype_manifest =
+                  None
+            ]
+          structure_item (bin/stocks_01_shared_read.ml[8,71+2]..bin/stocks_01_shared_read.ml[8,71+31])
+            Tstr_value Nonrec
+            [
+              <def>
+                pattern (bin/stocks_01_shared_read.ml[8,71+6]..bin/stocks_01_shared_read.ml[8,71+12])
+                  Tpat_var "create/1681"
+                  sort value
+                  value_mode meet(local,once,nonportable,unforkable,yielding,stateful)(modevar#4[global,many,portable,forkable,unyielding,stateless .. global,many,nonportable,forkable,unyielding,stateful]);imply(unique,uncontended,read_write)(modevar#5[aliased,contended,immutable .. unique,uncontended,read_write])
+                expression (bin/stocks_01_shared_read.ml[8,71+13]..bin/stocks_01_shared_read.ml[8,71+31]) ghost
+                  Texp_function
+                  alloc_mode map_comonadic(regional_to_global)(modevar#6[global,many,portable,forkable,unyielding,stateless .. global,many,nonportable,forkable,unyielding,stateful]);id(modevar#7[aliased,contended,immutable .. unique,uncontended,read_write])
+                  [
+                    Labelled "price"
+                    Param_pat
+                      pattern (bin/stocks_01_shared_read.ml[8,71+14]..bin/stocks_01_shared_read.ml[8,71+19])
+                        Tpat_var "price/1683"
+                        sort value
+                        value_mode map_comonadic(local_to_regional)(modevar#8[global,many,portable,forkable,unyielding,stateless .. global,once,nonportable,unforkable,yielding,stateful]);imply(unique,uncontended,read_write)(modevar#9[aliased,contended,immutable .. unique,uncontended,read_write])
+                  ]
+                  Tfunction_body
+                    expression (bin/stocks_01_shared_read.ml[8,71+22]..bin/stocks_01_shared_read.ml[8,71+31])
+                      Texp_record
+                        alloc_mode meet(global,once,nonportable,unforkable,yielding,stateful,map_comonadic(id)(modevar#a[global,many,portable,forkable,unyielding,stateless .. global,once,nonportable,unforkable,yielding,stateful]));unique,uncontended,read_write
+                        fields =
+                          [
+                            "price"
+                              expression (bin/stocks_01_shared_read.ml[8,71+24]..bin/stocks_01_shared_read.ml[8,71+29])
+                                Texp_ident "price/1683"
+                          ]
+                        representation =
+                          Record_float
+                        extended_expression =
+                          None
+            ]
+          structure_item (bin/stocks_01_shared_read.ml[9,103+2]..bin/stocks_01_shared_read.ml[9,103+32])
+            Tstr_value Nonrec
+            [
+              <def>
+                pattern (bin/stocks_01_shared_read.ml[9,103+6]..bin/stocks_01_shared_read.ml[9,103+11])
+                  Tpat_var "price/1684"
+                  sort value
+                  value_mode meet(local,once,nonportable,unforkable,yielding,stateful)(modevar#10[global,many,portable,forkable,unyielding,stateless .. global,many,portable,forkable,unyielding,stateful]);imply(unique,uncontended,read_write)(modevar#11[aliased,contended,immutable .. unique,uncontended,read_write])
+                expression (bin/stocks_01_shared_read.ml[9,103+12]..bin/stocks_01_shared_read.ml[9,103+32]) ghost
+                  Texp_function
+                  alloc_mode map_comonadic(regional_to_global)(modevar#12[global,many,portable,forkable,unyielding,stateless .. global,many,portable,forkable,unyielding,stateful]);id(modevar#13[aliased,contended,immutable .. unique,uncontended,read_write])
+                  [
+                    Nolabel
+                    Param_pat
+                      pattern (bin/stocks_01_shared_read.ml[9,103+12]..bin/stocks_01_shared_read.ml[9,103+24])
+                        Tpat_record
+                        [
+                          "price"
+                            pattern (bin/stocks_01_shared_read.ml[9,103+14]..bin/stocks_01_shared_read.ml[9,103+19])
+                              Tpat_var "price/1686"
+                              sort value
+                              value_mode meet(local,many,portable,forkable,unyielding,stateless) ∘ map_comonadic(local_to_regional)(modevar#14[global,many,portable,forkable,unyielding,stateless .. local,once,nonportable,unforkable,yielding,stateful]);aliased,uncontended,read_write
+                        ]
+                  ]
+                  Tfunction_body
+                    expression (bin/stocks_01_shared_read.ml[9,103+27]..bin/stocks_01_shared_read.ml[9,103+32])
+                      Texp_ident "price/1686"
+            ]
+        ]
+  structure_item (bin/stocks_01_shared_read.ml[12,141+0]..bin/stocks_01_shared_read.ml[22,637+21])
+    Tstr_value Nonrec
+    [
+      <def>
+        pattern (bin/stocks_01_shared_read.ml[12,141+4]..bin/stocks_01_shared_read.ml[12,141+26])
+          Tpat_var "count_weird_stocks_par/1689"
+          sort value
+          value_mode global,many,portable,forkable,unyielding,stateful;imply(unique,uncontended,read_write)(modevar#20[aliased,contended,immutable .. unique,uncontended,read_write])
+        expression (bin/stocks_01_shared_read.ml[12,141+27]..bin/stocks_01_shared_read.ml[22,637+21]) ghost
+          Texp_function
+          alloc_mode global,many,portable,forkable,unyielding,stateful;id(modevar#22[aliased,contended,immutable .. unique,uncontended,read_write])
+          [
+            Nolabel
+            Param_pat
+              pattern (bin/stocks_01_shared_read.ml[12,141+28]..bin/stocks_01_shared_read.ml[12,141+31])
+                extra
+                  Tpat_extra_constraint
+                  core_type (bin/stocks_01_shared_read.ml[12,141+34]..bin/stocks_01_shared_read.ml[12,141+44])
+                    Ttyp_constr "Parallel!.t"
+                    []
+                Tpat_var "par/1719"
+                sort value
+                value_mode meet(local,once,portable,unforkable,yielding,stateful) ∘ map_comonadic(local_to_regional)(modevar#23[global,many,portable,forkable,unyielding,stateless .. local,many,nonportable,unforkable,yielding,stateful]);aliased,uncontended,read_write
+            Nolabel
+            Param_pat
+              pattern (bin/stocks_01_shared_read.ml[12,141+46]..bin/stocks_01_shared_read.ml[12,141+52])
+                Tpat_var "prices/1720"
+                sort value
+                value_mode map_comonadic(local_to_regional)(modevar#29[global,many,portable,forkable,unyielding,stateless .. global,many,portable,forkable,unyielding,stateful]);imply(unique,uncontended,read_write)(modevar#2a[aliased,contended,immutable .. aliased,uncontended,read_write])
+          ]
+          Tfunction_body
+            expression (bin/stocks_01_shared_read.ml[13,196+2]..bin/stocks_01_shared_read.ml[22,637+21])
+              Texp_let Nonrec
+              [
+                <def>
+                  pattern (bin/stocks_01_shared_read.ml[13,196+6]..bin/stocks_01_shared_read.ml[13,196+20])
+                    Tpat_var "is_penny_stock/1721"
+                    sort value
+                    value_mode meet(local,once,nonportable,unforkable,yielding,stateful)(modevar#2d[global,many,portable,forkable,unyielding,stateful .. local,many,nonportable,unforkable,yielding,stateful]);imply(unique,uncontended,read_write)(modevar#2e[aliased,contended,immutable .. unique,uncontended,read_write])
+                  expression (bin/stocks_01_shared_read.ml[13,196+21]..bin/stocks_01_shared_read.ml[13,196+60]) ghost
+                    Texp_function
+                    alloc_mode map_comonadic(regional_to_global)(modevar#2f[local,many,portable,forkable,unyielding,stateful .. local,many,nonportable,unforkable,yielding,stateful]);id(modevar#30[aliased,contended,immutable .. unique,uncontended,read_write])
+                    [
+                      Nolabel
+                      Param_pat
+                        pattern (bin/stocks_01_shared_read.ml[13,196+21]..bin/stocks_01_shared_read.ml[13,196+26])
+                          Tpat_var "stock/1723"
+                          sort value
+                          value_mode map_comonadic(local_to_regional)(modevar#31[global,many,nonportable,forkable,unyielding,stateful .. local,once,nonportable,unforkable,yielding,stateful]);imply(unique,uncontended,read_write)(modevar#32[aliased,contended,immutable .. aliased,uncontended,read_write])
+                    ]
+                    Tfunction_body
+                      expression (bin/stocks_01_shared_read.ml[13,196+29]..bin/stocks_01_shared_read.ml[13,196+60])
+                        Texp_open Fresh
+                        module_expr (bin/stocks_01_shared_read.ml[13,196+29]..bin/stocks_01_shared_read.ml[13,196+34])
+                          Tmod_ident "Core!.Float"
+                        expression (bin/stocks_01_shared_read.ml[13,196+36]..bin/stocks_01_shared_read.ml[13,196+59])
+                          Texp_apply
+                          apply_mode Tail
+                          locality_mode global
+                          expression (bin/stocks_01_shared_read.ml[13,196+54]..bin/stocks_01_shared_read.ml[13,196+55])
+                            Texp_ident "Core!.Float.<"
+                          [
+                            <arg>
+                              Nolabel
+                              expression (bin/stocks_01_shared_read.ml[13,196+36]..bin/stocks_01_shared_read.ml[13,196+53])
+                                Texp_apply
+                                apply_mode Default
+                                locality_mode proj_locality(modevar#16[global,many,portable,forkable,unyielding,stateless .. local,once,nonportable,unforkable,yielding,stateful])
+                                expression (bin/stocks_01_shared_read.ml[13,196+36]..bin/stocks_01_shared_read.ml[13,196+47])
+                                  Texp_ident "Stock/1688.price"
+                                [
+                                  <arg>
+                                    Nolabel
+                                    expression (bin/stocks_01_shared_read.ml[13,196+48]..bin/stocks_01_shared_read.ml[13,196+53])
+                                      Texp_ident "stock/1723"
+                                ]
+                            <arg>
+                              Nolabel
+                              expression (bin/stocks_01_shared_read.ml[13,196+56]..bin/stocks_01_shared_read.ml[13,196+59])
+                                Texp_constant Const_float 1.0
+                          ]
+              ]
+              expression (bin/stocks_01_shared_read.ml[14,260+2]..bin/stocks_01_shared_read.ml[22,637+21])
+                Texp_let Nonrec
+                [
+                  <def>
+                    pattern (bin/stocks_01_shared_read.ml[14,260+6]..bin/stocks_01_shared_read.ml[14,260+24])
+                      Tpat_var "count_penny_stocks/3152"
+                      sort value
+                      value_mode meet(local,once,nonportable,unforkable,yielding,stateful)(modevar#4a[global,many,portable,forkable,unyielding,stateless .. local,once,nonportable,unforkable,yielding,stateful]);imply(unique,uncontended,read_write)(modevar#4b[aliased,contended,immutable .. unique,uncontended,read_write])
+                    expression (bin/stocks_01_shared_read.ml[14,260+25]..bin/stocks_01_shared_read.ml[14,260+63]) ghost
+                      Texp_function
+                      alloc_mode map_comonadic(regional_to_global)(modevar#4c[local,many,portable,forkable,unyielding,stateful .. local,once,nonportable,unforkable,yielding,stateful]);id(modevar#4d[aliased,contended,immutable .. unique,uncontended,read_write])
+                      [
+                        Nolabel
+                        Param_pat
+                          pattern (bin/stocks_01_shared_read.ml[14,260+25]..bin/stocks_01_shared_read.ml[14,260+28])
+                            Tpat_var "lst/3154"
+                            sort value
+                            value_mode map_comonadic(local_to_regional)(modevar#4e[global,many,portable,forkable,unyielding,stateless .. global,many,nonportable,forkable,unyielding,stateful]);aliased,uncontended,read_write
+                      ]
+                      Tfunction_body
+                        expression (bin/stocks_01_shared_read.ml[14,260+31]..bin/stocks_01_shared_read.ml[14,260+63])
+                          Texp_apply
+                          apply_mode Tail
+                          locality_mode global
+                          expression (bin/stocks_01_shared_read.ml[14,260+31]..bin/stocks_01_shared_read.ml[14,260+41])
+                            Texp_ident "Core!.List.count"
+                          [
+                            <arg>
+                              Nolabel
+                              expression (bin/stocks_01_shared_read.ml[14,260+42]..bin/stocks_01_shared_read.ml[14,260+45])
+                                Texp_ident "lst/3154"
+                            <arg>
+                              Labelled "f"
+                              expression (bin/stocks_01_shared_read.ml[14,260+49]..bin/stocks_01_shared_read.ml[14,260+63])
+                                Texp_ident "is_penny_stock/1721"
+                          ]
+                ]
+                expression (bin/stocks_01_shared_read.ml[15,327+2]..bin/stocks_01_shared_read.ml[22,637+21])
+                  Texp_let Nonrec
+                  [
+                    <def>
+                      pattern (bin/stocks_01_shared_read.ml[15,327+6]..bin/stocks_01_shared_read.ml[15,327+25])
+                        Tpat_var "is_five_digit_stock/6189"
+                        sort value
+                        value_mode global,many,portable,forkable,unyielding,stateful;imply(unique,uncontended,read_write)(modevar#5f[aliased,contended,immutable .. unique,uncontended,read_write])
+                      expression (bin/stocks_01_shared_read.ml[15,327+26]..bin/stocks_01_shared_read.ml[15,327+70]) ghost
+                        Texp_function
+                        alloc_mode global,many,portable,forkable,unyielding,stateful;id(modevar#61[aliased,contended,immutable .. unique,uncontended,read_write])
+                        [
+                          Nolabel
+                          Param_pat
+                            pattern (bin/stocks_01_shared_read.ml[15,327+26]..bin/stocks_01_shared_read.ml[15,327+31])
+                              Tpat_var "stock/6191"
+                              sort value
+                              value_mode map_comonadic(local_to_regional)(modevar#62[global,many,nonportable,forkable,unyielding,stateful .. local,once,nonportable,unforkable,yielding,stateful]);imply(unique,uncontended,read_write)(modevar#63[aliased,contended,immutable .. aliased,uncontended,read_write])
+                        ]
+                        Tfunction_body
+                          expression (bin/stocks_01_shared_read.ml[15,327+34]..bin/stocks_01_shared_read.ml[15,327+70])
+                            Texp_open Fresh
+                            module_expr (bin/stocks_01_shared_read.ml[15,327+34]..bin/stocks_01_shared_read.ml[15,327+39])
+                              Tmod_ident "Core!.Float"
+                            expression (bin/stocks_01_shared_read.ml[15,327+41]..bin/stocks_01_shared_read.ml[15,327+69])
+                              Texp_apply
+                              apply_mode Tail
+                              locality_mode global
+                              expression (bin/stocks_01_shared_read.ml[15,327+59]..bin/stocks_01_shared_read.ml[15,327+61])
+                                Texp_ident "Core!.Float.>="
+                              [
+                                <arg>
+                                  Nolabel
+                                  expression (bin/stocks_01_shared_read.ml[15,327+41]..bin/stocks_01_shared_read.ml[15,327+58])
+                                    Texp_apply
+                                    apply_mode Default
+                                    locality_mode proj_locality(modevar#16[global,many,portable,forkable,unyielding,stateless .. local,once,nonportable,unforkable,yielding,stateful])
+                                    expression (bin/stocks_01_shared_read.ml[15,327+41]..bin/stocks_01_shared_read.ml[15,327+52])
+                                      Texp_ident "Stock/1688.price"
+                                    [
+                                      <arg>
+                                        Nolabel
+                                        expression (bin/stocks_01_shared_read.ml[15,327+53]..bin/stocks_01_shared_read.ml[15,327+58])
+                                          Texp_ident "stock/6191"
+                                    ]
+                                <arg>
+                                  Nolabel
+                                  expression (bin/stocks_01_shared_read.ml[15,327+62]..bin/stocks_01_shared_read.ml[15,327+69])
+                                    Texp_constant Const_float 10000.0
+                              ]
+                  ]
+                  expression (bin/stocks_01_shared_read.ml[16,401+2]..bin/stocks_01_shared_read.ml[22,637+21])
+                    Texp_let Nonrec
+                    [
+                      <def>
+                        pattern (bin/stocks_01_shared_read.ml[16,401+6]..bin/stocks_01_shared_read.ml[16,401+29])
+                          Tpat_var "count_five_digit_stocks/6192"
+                          sort value
+                          value_mode meet(local,once,nonportable,unforkable,yielding,stateful)(modevar#7b[global,many,portable,forkable,unyielding,stateful .. global,once,portable,forkable,unyielding,stateful]);imply(unique,uncontended,read_write)(modevar#7c[aliased,contended,immutable .. unique,uncontended,read_write])
+                        expression (bin/stocks_01_shared_read.ml[16,401+30]..bin/stocks_01_shared_read.ml[16,401+73]) ghost
+                          Texp_function
+                          alloc_mode map_comonadic(regional_to_global)(modevar#7d[global,many,portable,forkable,unyielding,stateful .. global,once,portable,forkable,unyielding,stateful]);id(modevar#7e[aliased,contended,immutable .. unique,uncontended,read_write])
+                          [
+                            Nolabel
+                            Param_pat
+                              pattern (bin/stocks_01_shared_read.ml[16,401+30]..bin/stocks_01_shared_read.ml[16,401+33])
+                                Tpat_var "lst/6194"
+                                sort value
+                                value_mode map_comonadic(local_to_regional)(modevar#7f[global,many,portable,forkable,unyielding,stateless .. global,many,nonportable,forkable,unyielding,stateful]);aliased,uncontended,read_write
+                          ]
+                          Tfunction_body
+                            expression (bin/stocks_01_shared_read.ml[16,401+36]..bin/stocks_01_shared_read.ml[16,401+73])
+                              Texp_apply
+                              apply_mode Tail
+                              locality_mode global
+                              expression (bin/stocks_01_shared_read.ml[16,401+36]..bin/stocks_01_shared_read.ml[16,401+46])
+                                Texp_ident "Core!.List.count"
+                              [
+                                <arg>
+                                  Nolabel
+                                  expression (bin/stocks_01_shared_read.ml[16,401+47]..bin/stocks_01_shared_read.ml[16,401+50])
+                                    Texp_ident "lst/6194"
+                                <arg>
+                                  Labelled "f"
+                                  expression (bin/stocks_01_shared_read.ml[16,401+54]..bin/stocks_01_shared_read.ml[16,401+73])
+                                    Texp_ident "is_five_digit_stock/6189"
+                              ]
+                    ]
+                    expression (bin/stocks_01_shared_read.ml[17,478+2]..bin/stocks_01_shared_read.ml[22,637+21])
+                      Texp_let Nonrec
+                      [
+                        <def>
+                          pattern (bin/stocks_01_shared_read.ml[17,478+6]..bin/stocks_01_shared_read.ml[17,478+26])
+                            Tpat_unboxed_tuple
+                            [
+                              Label: None
+                              pattern (bin/stocks_01_shared_read.ml[17,478+8]..bin/stocks_01_shared_read.ml[17,478+13])
+                                Tpat_var "penny/6195"
+                                sort value
+                                value_mode meet(local,once,nonportable,unforkable,yielding,stateful)(modevar#8f[global,many,nonportable,forkable,unyielding,stateful .. local,once,nonportable,unforkable,yielding,stateful]);imply(unique,uncontended,read_write)(modevar#90[aliased,contended,immutable .. aliased,uncontended,read_write])
+                              value
+                              Label: None
+                              pattern (bin/stocks_01_shared_read.ml[17,478+15]..bin/stocks_01_shared_read.ml[17,478+25])
+                                Tpat_var "five_digit/6196"
+                                sort value
+                                value_mode meet(local,once,nonportable,unforkable,yielding,stateful)(modevar#91[global,many,nonportable,forkable,unyielding,stateful .. local,once,nonportable,unforkable,yielding,stateful]);imply(unique,uncontended,read_write)(modevar#92[aliased,contended,immutable .. aliased,uncontended,read_write])
+                              value
+                            ]
+                          expression (bin/stocks_01_shared_read.ml[18,507+4]..bin/stocks_01_shared_read.ml[20,581+50])
+                            Texp_apply
+                            apply_mode Default
+                            locality_mode global
+                            expression (bin/stocks_01_shared_read.ml[18,507+4]..bin/stocks_01_shared_read.ml[18,507+23])
+                              Texp_ident "Parallel!.fork_join2"
+                            [
+                              <arg>
+                                Nolabel
+                                expression (bin/stocks_01_shared_read.ml[18,507+24]..bin/stocks_01_shared_read.ml[18,507+27])
+                                  Texp_ident "par/1719"
+                              <arg>
+                                Nolabel
+                                expression (bin/stocks_01_shared_read.ml[19,535+6]..bin/stocks_01_shared_read.ml[19,535+45])
+                                  Texp_function
+                                  alloc_mode map_comonadic(regional_to_global)(modevar#9b[local,many,portable,forkable,unyielding,stateless .. local,once,nonportable,unforkable,yielding,stateful]);id(modevar#9c[aliased,contended,immutable .. unique,uncontended,read_write])
+                                  [
+                                    Nolabel
+                                    Param_pat
+                                      pattern (bin/stocks_01_shared_read.ml[19,535+11]..bin/stocks_01_shared_read.ml[19,535+15])
+                                        Tpat_var "_par/6197"
+                                        sort value
+                                        value_mode regional,many,portable,unforkable,yielding,stateful;aliased,uncontended,read_write
+                                  ]
+                                  Tfunction_body
+                                    expression (bin/stocks_01_shared_read.ml[19,535+19]..bin/stocks_01_shared_read.ml[19,535+44])
+                                      Texp_apply
+                                      apply_mode Tail
+                                      locality_mode global
+                                      expression (bin/stocks_01_shared_read.ml[19,535+19]..bin/stocks_01_shared_read.ml[19,535+37])
+                                        Texp_ident "count_penny_stocks/3152"
+                                      [
+                                        <arg>
+                                          Nolabel
+                                          expression (bin/stocks_01_shared_read.ml[19,535+38]..bin/stocks_01_shared_read.ml[19,535+44])
+                                            Texp_ident "prices/1720"
+                                      ]
+                              <arg>
+                                Nolabel
+                                expression (bin/stocks_01_shared_read.ml[20,581+6]..bin/stocks_01_shared_read.ml[20,581+50])
+                                  Texp_function
+                                  alloc_mode map_comonadic(regional_to_global)(modevar#a3[global,many,portable,forkable,unyielding,stateful .. global,once,portable,forkable,unyielding,stateful]);id(modevar#a4[aliased,contended,immutable .. unique,uncontended,read_write])
+                                  [
+                                    Nolabel
+                                    Param_pat
+                                      pattern (bin/stocks_01_shared_read.ml[20,581+11]..bin/stocks_01_shared_read.ml[20,581+15])
+                                        Tpat_var "_par/6198"
+                                        sort value
+                                        value_mode regional,many,portable,unforkable,yielding,stateful;aliased,uncontended,read_write
+                                  ]
+                                  Tfunction_body
+                                    expression (bin/stocks_01_shared_read.ml[20,581+19]..bin/stocks_01_shared_read.ml[20,581+49])
+                                      Texp_apply
+                                      apply_mode Tail
+                                      locality_mode global
+                                      expression (bin/stocks_01_shared_read.ml[20,581+19]..bin/stocks_01_shared_read.ml[20,581+42])
+                                        Texp_ident "count_five_digit_stocks/6192"
+                                      [
+                                        <arg>
+                                          Nolabel
+                                          expression (bin/stocks_01_shared_read.ml[20,581+43]..bin/stocks_01_shared_read.ml[20,581+49])
+                                            Texp_ident "prices/1720"
+                                      ]
+                            ]
+                      ]
+                      expression (bin/stocks_01_shared_read.ml[22,637+2]..bin/stocks_01_shared_read.ml[22,637+21])
+                        Texp_tuple
+                        alloc_mode meet(global,once,nonportable,unforkable,yielding,stateful,map_comonadic(id)(modevar#2b[global,many,portable,forkable,unyielding,stateless .. global,once,nonportable,unforkable,yielding,stateful]));unique,uncontended,read_write
+                        [
+                          Label: None
+                            expression (bin/stocks_01_shared_read.ml[22,637+3]..bin/stocks_01_shared_read.ml[22,637+8])
+                              Texp_ident "penny/6195"
+                          Label: None
+                            expression (bin/stocks_01_shared_read.ml[22,637+10]..bin/stocks_01_shared_read.ml[22,637+20])
+                              Texp_ident "five_digit/6196"
+                        ]
+    ]
+  structure_item (bin/stocks_01_shared_read.ml[25,663+0]..bin/stocks_01_shared_read.ml[30,873+15])
+    Tstr_value Nonrec
+    [
+      <def>
+        pattern (bin/stocks_01_shared_read.ml[25,663+4]..bin/stocks_01_shared_read.ml[25,663+10])
+          Tpat_var "stocks/6199"
+          sort value
+          value_mode meet(local,once,nonportable,unforkable,yielding,stateful)(modevar#bb[global,many,portable,forkable,unyielding,stateless .. global,many,nonportable,forkable,unyielding,stateful]);imply(unique,uncontended,read_write)(modevar#bc[aliased,contended,immutable .. unique,uncontended,read_write])
+        expression (bin/stocks_01_shared_read.ml[25,663+13]..bin/stocks_01_shared_read.ml[30,873+15])
+          Texp_construct "::"
+          alloc_mode meet(local,once,nonportable,unforkable,yielding,stateful,map_comonadic(regional_to_global)(modevar#bb[global,many,portable,forkable,unyielding,stateless .. global,many,nonportable,forkable,unyielding,stateful]));unique,uncontended,read_write
+          [
+            expression (bin/stocks_01_shared_read.ml[25,663+14]..bin/stocks_01_shared_read.ml[25,663+40])
+              Texp_apply
+              apply_mode Default
+              locality_mode global
+              expression (bin/stocks_01_shared_read.ml[25,663+15]..bin/stocks_01_shared_read.ml[25,663+27])
+                Texp_ident "Stock/1688.create"
+              [
+                <arg>
+                  Labelled "price"
+                  expression (bin/stocks_01_shared_read.ml[25,663+35]..bin/stocks_01_shared_read.ml[25,663+39])
+                    Texp_constant Const_float 0.07
+              ]
+            expression (bin/stocks_01_shared_read.ml[26,705+14]..bin/stocks_01_shared_read.ml[30,873+15]) ghost
+              Texp_construct "::"
+              alloc_mode meet(local,once,nonportable,unforkable,yielding,stateful,map_comonadic(regional_to_global)(modevar#bb[global,many,portable,forkable,unyielding,stateless .. global,many,nonportable,forkable,unyielding,stateful]));unique,uncontended,read_write
+              [
+                expression (bin/stocks_01_shared_read.ml[26,705+14]..bin/stocks_01_shared_read.ml[26,705+43])
+                  Texp_apply
+                  apply_mode Default
+                  locality_mode global
+                  expression (bin/stocks_01_shared_read.ml[26,705+15]..bin/stocks_01_shared_read.ml[26,705+27])
+                    Texp_ident "Stock/1688.create"
+                  [
+                    <arg>
+                      Labelled "price"
+                      expression (bin/stocks_01_shared_read.ml[26,705+35]..bin/stocks_01_shared_read.ml[26,705+42])
+                        Texp_constant Const_float 50000.0
+                  ]
+                expression (bin/stocks_01_shared_read.ml[27,750+14]..bin/stocks_01_shared_read.ml[30,873+15]) ghost
+                  Texp_construct "::"
+                  alloc_mode meet(local,once,nonportable,unforkable,yielding,stateful,map_comonadic(regional_to_global)(modevar#bb[global,many,portable,forkable,unyielding,stateless .. global,many,nonportable,forkable,unyielding,stateful]));unique,uncontended,read_write
+                  [
+                    expression (bin/stocks_01_shared_read.ml[27,750+14]..bin/stocks_01_shared_read.ml[27,750+39])
+                      Texp_apply
+                      apply_mode Default
+                      locality_mode global
+                      expression (bin/stocks_01_shared_read.ml[27,750+15]..bin/stocks_01_shared_read.ml[27,750+27])
+                        Texp_ident "Stock/1688.create"
+                      [
+                        <arg>
+                          Labelled "price"
+                          expression (bin/stocks_01_shared_read.ml[27,750+35]..bin/stocks_01_shared_read.ml[27,750+38])
+                            Texp_constant Const_float 3.3
+                      ]
+                    expression (bin/stocks_01_shared_read.ml[28,791+14]..bin/stocks_01_shared_read.ml[30,873+15]) ghost
+                      Texp_construct "::"
+                      alloc_mode meet(local,once,nonportable,unforkable,yielding,stateful,map_comonadic(regional_to_global)(modevar#bb[global,many,portable,forkable,unyielding,stateless .. global,many,nonportable,forkable,unyielding,stateful]));unique,uncontended,read_write
+                      [
+                        expression (bin/stocks_01_shared_read.ml[28,791+14]..bin/stocks_01_shared_read.ml[28,791+39])
+                          Texp_apply
+                          apply_mode Default
+                          locality_mode global
+                          expression (bin/stocks_01_shared_read.ml[28,791+15]..bin/stocks_01_shared_read.ml[28,791+27])
+                            Texp_ident "Stock/1688.create"
+                          [
+                            <arg>
+                              Labelled "price"
+                              expression (bin/stocks_01_shared_read.ml[28,791+35]..bin/stocks_01_shared_read.ml[28,791+38])
+                                Texp_constant Const_float 0.5
+                          ]
+                        expression (bin/stocks_01_shared_read.ml[29,832+14]..bin/stocks_01_shared_read.ml[30,873+15]) ghost
+                          Texp_construct "::"
+                          alloc_mode meet(local,once,nonportable,unforkable,yielding,stateful,map_comonadic(regional_to_global)(modevar#bb[global,many,portable,forkable,unyielding,stateless .. global,many,nonportable,forkable,unyielding,stateful]));unique,uncontended,read_write
+                          [
+                            expression (bin/stocks_01_shared_read.ml[29,832+14]..bin/stocks_01_shared_read.ml[29,832+39])
+                              Texp_apply
+                              apply_mode Default
+                              locality_mode global
+                              expression (bin/stocks_01_shared_read.ml[29,832+15]..bin/stocks_01_shared_read.ml[29,832+27])
+                                Texp_ident "Stock/1688.create"
+                              [
+                                <arg>
+                                  Labelled "price"
+                                  expression (bin/stocks_01_shared_read.ml[29,832+35]..bin/stocks_01_shared_read.ml[29,832+38])
+                                    Texp_constant Const_float 2.0
+                              ]
+                            expression (bin/stocks_01_shared_read.ml[30,873+14]..bin/stocks_01_shared_read.ml[30,873+15]) ghost
+                              Texp_construct "[]"
+                              []
+                          ]
+                      ]
+                  ]
+              ]
+          ]
+    ]
+  structure_item (bin/stocks_01_shared_read.ml[32,890+0]..bin/stocks_01_shared_read.ml[32,890+47])
+    Tstr_value Nonrec
+    [
+      <def>
+        pattern (bin/stocks_01_shared_read.ml[32,890+4]..bin/stocks_01_shared_read.ml[32,890+7])
+          Tpat_var "run/6200"
+          sort value
+          value_mode global,many,portable,forkable,unyielding,stateful;imply(unique,uncontended,read_write)(modevar#d5[aliased,contended,immutable .. unique,uncontended,read_write])
+        expression (bin/stocks_01_shared_read.ml[32,890+8]..bin/stocks_01_shared_read.ml[32,890+47]) ghost
+          Texp_function
+          alloc_mode global,many,portable,forkable,unyielding,stateful;id(modevar#d7[aliased,contended,immutable .. unique,uncontended,read_write])
+          [
+            Nolabel
+            Param_pat
+              pattern (bin/stocks_01_shared_read.ml[32,890+8]..bin/stocks_01_shared_read.ml[32,890+11])
+                Tpat_var "par/6202"
+                sort value
+                value_mode regional,many,nonportable,unforkable,yielding,stateful;imply(unique,uncontended,read_write)(modevar#d9[aliased,contended,read_write .. aliased,uncontended,read_write])
+          ]
+          Tfunction_body
+            expression (bin/stocks_01_shared_read.ml[32,890+14]..bin/stocks_01_shared_read.ml[32,890+47])
+              Texp_apply
+              apply_mode Tail
+              locality_mode global
+              expression (bin/stocks_01_shared_read.ml[32,890+14]..bin/stocks_01_shared_read.ml[32,890+36])
+                Texp_ident "count_weird_stocks_par/1689"
+              [
+                <arg>
+                  Nolabel
+                  expression (bin/stocks_01_shared_read.ml[32,890+37]..bin/stocks_01_shared_read.ml[32,890+40])
+                    Texp_ident "par/6202"
+                <arg>
+                  Nolabel
+                  expression (bin/stocks_01_shared_read.ml[32,890+41]..bin/stocks_01_shared_read.ml[32,890+47])
+                    Texp_ident "stocks/6199"
+              ]
+    ]
+  structure_item (bin/stocks_01_shared_read.ml[34,939+0]..bin/stocks_01_shared_read.ml[36,1014+50])
+    Tstr_value Nonrec
+    [
+      <def>
+        pattern (bin/stocks_01_shared_read.ml[34,939+4]..bin/stocks_01_shared_read.ml[34,939+6])
+          Tpat_construct "()"
+          []
+          None
+        expression (bin/stocks_01_shared_read.ml[35,948+2]..bin/stocks_01_shared_read.ml[36,1014+50])
+          Texp_let Nonrec
+          [
+            <def>
+              pattern (bin/stocks_01_shared_read.ml[35,948+6]..bin/stocks_01_shared_read.ml[35,948+25])
+                Tpat_tuple
+                [
+                  Label: None
+                  pattern (bin/stocks_01_shared_read.ml[35,948+7]..bin/stocks_01_shared_read.ml[35,948+12])
+                    Tpat_var "penny/6203"
+                    sort value
+                    value_mode meet(local,once,nonportable,unforkable,yielding,stateful)(modevar#e8[global,many,nonportable,forkable,unyielding,stateful .. local,once,nonportable,unforkable,yielding,stateful]);imply(unique,uncontended,read_write)(modevar#e9[aliased,contended,immutable .. aliased,uncontended,read_write])
+                  Label: None
+                  pattern (bin/stocks_01_shared_read.ml[35,948+14]..bin/stocks_01_shared_read.ml[35,948+24])
+                    Tpat_var "five_digit/6204"
+                    sort value
+                    value_mode meet(local,once,nonportable,unforkable,yielding,stateful)(modevar#ea[global,many,nonportable,forkable,unyielding,stateful .. local,once,nonportable,unforkable,yielding,stateful]);imply(unique,uncontended,read_write)(modevar#eb[aliased,contended,immutable .. aliased,uncontended,read_write])
+                ]
+              expression (bin/stocks_01_shared_read.ml[35,948+28]..bin/stocks_01_shared_read.ml[35,948+62])
+                Texp_apply
+                apply_mode Default
+                locality_mode global
+                expression (bin/stocks_01_shared_read.ml[35,948+28]..bin/stocks_01_shared_read.ml[35,948+55])
+                  Texp_ident "Dune__exe!.Parallel_utils.run_one_test"
+                [
+                  <arg>
+                    Labelled "f"
+                    expression (bin/stocks_01_shared_read.ml[35,948+59]..bin/stocks_01_shared_read.ml[35,948+62])
+                      Texp_ident "run/6200"
+                ]
+          ]
+          expression (bin/stocks_01_shared_read.ml[36,1014+2]..bin/stocks_01_shared_read.ml[36,1014+50])
+            Texp_apply
+            apply_mode Default
+            locality_mode global
+            expression (bin/stocks_01_shared_read.ml[36,1014+2]..bin/stocks_01_shared_read.ml[36,1014+15])
+              Texp_ident "Core!.Printf.printf"
+            [
+              <arg>
+                Nolabel
+                expression (bin/stocks_01_shared_read.ml[36,1014+16]..bin/stocks_01_shared_read.ml[36,1014+33])
+                  Texp_construct "CamlinternalFormatBasics.Format"
+                  alloc_mode meet(global,many,nonportable,forkable,unyielding,stateful,map_comonadic(regional_to_global)(modevar#102[global,many,portable,forkable,unyielding,stateless .. global,many,nonportable,forkable,unyielding,stateful]));unique,uncontended,read_write
+                  [
+                    expression (bin/stocks_01_shared_read.ml[36,1014+16]..bin/stocks_01_shared_read.ml[36,1014+33]) ghost
+                      Texp_construct "CamlinternalFormatBasics.String_literal"
+                      alloc_mode meet(global,many,nonportable,forkable,unyielding,stateful,map_comonadic(regional_to_global)(modevar#102[global,many,portable,forkable,unyielding,stateless .. global,many,nonportable,forkable,unyielding,stateful]));unique,uncontended,read_write
+                      [
+                        expression (bin/stocks_01_shared_read.ml[36,1014+16]..bin/stocks_01_shared_read.ml[36,1014+33]) ghost
+                          Texp_constant Const_string("result: ",(bin/stocks_01_shared_read.ml[36,1014+16]..bin/stocks_01_shared_read.ml[36,1014+33]) ghost,None)
+                        expression (bin/stocks_01_shared_read.ml[36,1014+16]..bin/stocks_01_shared_read.ml[36,1014+33]) ghost
+                          Texp_construct "CamlinternalFormatBasics.Int"
+                          alloc_mode meet(global,many,nonportable,forkable,unyielding,stateful,map_comonadic(regional_to_global)(modevar#102[global,many,portable,forkable,unyielding,stateless .. global,many,nonportable,forkable,unyielding,stateful]));unique,uncontended,read_write
+                          [
+                            expression (bin/stocks_01_shared_read.ml[36,1014+16]..bin/stocks_01_shared_read.ml[36,1014+33]) ghost
+                              Texp_construct "CamlinternalFormatBasics.Int_d"
+                              []
+                            expression (bin/stocks_01_shared_read.ml[36,1014+16]..bin/stocks_01_shared_read.ml[36,1014+33]) ghost
+                              Texp_construct "CamlinternalFormatBasics.No_padding"
+                              []
+                            expression (bin/stocks_01_shared_read.ml[36,1014+16]..bin/stocks_01_shared_read.ml[36,1014+33]) ghost
+                              Texp_construct "CamlinternalFormatBasics.No_precision"
+                              []
+                            expression (bin/stocks_01_shared_read.ml[36,1014+16]..bin/stocks_01_shared_read.ml[36,1014+33]) ghost
+                              Texp_construct "CamlinternalFormatBasics.Char_literal"
+                              alloc_mode meet(global,many,nonportable,forkable,unyielding,stateful,map_comonadic(regional_to_global)(modevar#102[global,many,portable,forkable,unyielding,stateless .. global,many,nonportable,forkable,unyielding,stateful]));unique,uncontended,read_write
+                              [
+                                expression (bin/stocks_01_shared_read.ml[36,1014+16]..bin/stocks_01_shared_read.ml[36,1014+33]) ghost
+                                  Texp_constant Const_char 20
+                                expression (bin/stocks_01_shared_read.ml[36,1014+16]..bin/stocks_01_shared_read.ml[36,1014+33]) ghost
+                                  Texp_construct "CamlinternalFormatBasics.Int"
+                                  alloc_mode meet(global,many,nonportable,forkable,unyielding,stateful,map_comonadic(regional_to_global)(modevar#102[global,many,portable,forkable,unyielding,stateless .. global,many,nonportable,forkable,unyielding,stateful]));unique,uncontended,read_write
+                                  [
+                                    expression (bin/stocks_01_shared_read.ml[36,1014+16]..bin/stocks_01_shared_read.ml[36,1014+33]) ghost
+                                      Texp_construct "CamlinternalFormatBasics.Int_d"
+                                      []
+                                    expression (bin/stocks_01_shared_read.ml[36,1014+16]..bin/stocks_01_shared_read.ml[36,1014+33]) ghost
+                                      Texp_construct "CamlinternalFormatBasics.No_padding"
+                                      []
+                                    expression (bin/stocks_01_shared_read.ml[36,1014+16]..bin/stocks_01_shared_read.ml[36,1014+33]) ghost
+                                      Texp_construct "CamlinternalFormatBasics.No_precision"
+                                      []
+                                    expression (bin/stocks_01_shared_read.ml[36,1014+16]..bin/stocks_01_shared_read.ml[36,1014+33]) ghost
+                                      Texp_construct "CamlinternalFormatBasics.Char_literal"
+                                      alloc_mode meet(global,many,nonportable,forkable,unyielding,stateful,map_comonadic(regional_to_global)(modevar#102[global,many,portable,forkable,unyielding,stateless .. global,many,nonportable,forkable,unyielding,stateful]));unique,uncontended,read_write
+                                      [
+                                        expression (bin/stocks_01_shared_read.ml[36,1014+16]..bin/stocks_01_shared_read.ml[36,1014+33]) ghost
+                                          Texp_constant Const_char 0a
+                                        expression (bin/stocks_01_shared_read.ml[36,1014+16]..bin/stocks_01_shared_read.ml[36,1014+33]) ghost
+                                          Texp_construct "CamlinternalFormatBasics.End_of_format"
+                                          []
+                                      ]
+                                  ]
+                              ]
+                          ]
+                      ]
+                    expression (bin/stocks_01_shared_read.ml[36,1014+16]..bin/stocks_01_shared_read.ml[36,1014+33]) ghost
+                      Texp_constant Const_string("result: %d %d\n",(bin/stocks_01_shared_read.ml[36,1014+16]..bin/stocks_01_shared_read.ml[36,1014+33]) ghost,None)
+                  ]
+              <arg>
+                Nolabel
+                expression (bin/stocks_01_shared_read.ml[36,1014+34]..bin/stocks_01_shared_read.ml[36,1014+39])
+                  Texp_ident "penny/6203"
+              <arg>
+                Nolabel
+                expression (bin/stocks_01_shared_read.ml[36,1014+40]..bin/stocks_01_shared_read.ml[36,1014+50])
+                  Texp_ident "five_digit/6204"
+            ]
+    ]
+]
