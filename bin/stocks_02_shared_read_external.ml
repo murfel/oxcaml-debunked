@@ -1,6 +1,9 @@
 open Core
 open Par_samples
 
+(*  Technicality: cannot use List.count because it is not annotated, *)
+(*  and in fact can be misused: nothing prevents f from mutating list items. *)
+
 let count_weird_stocks_par (par : Parallel.t) stocks =
   let is_penny_stock stock = Float.(Stock.price stock < 1.0) in
   let count_penny_stocks lst = Parallel_utils.count_if lst ~f:is_penny_stock in
