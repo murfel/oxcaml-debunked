@@ -20,7 +20,7 @@ let () =
   let (is_penny, is_five_digit) = Parallel_utils.run_one_test ~f:run in
   Printf.printf "result: %b %b\n" is_penny is_five_digit (* result: true false *)
 
-(* File "bin/stocks_00_shared_read_external.ml", line 10, characters 19-38: *)
+(* File "bin/stocks_01_shared_read_external.ml", line 10, characters 19-38: *)
 (* 10 |       (fun _par -> is_five_digit_stock stock) *)
 (*                        ^^^^^^^^^^^^^^^^^^^ *)
 (* Error: The value is_five_digit_stock is nonportable *)
@@ -31,15 +31,15 @@ let () =
 
 (*  Fix: annotate Stock.price in lib/stock.mli as `@@ portable` *)
 
-(* File "bin/stocks_00_shared_read_external.ml", line 19, characters 39-44: *)
-(* 19 |       (fun _par -> is_five_digit_stock stock) *)
+(* File "bin/stocks_01_shared_read_external.ml", line 10, characters 39-44: *)
+(* 10 |       (fun _par -> is_five_digit_stock stock) *)
 (*                                            ^^^^^ *)
 (* Error: This value is contended but is expected to be uncontended. *)
 
 (*  Fix: annotate t passed into the price getter as `t @ contended` *)
 
-(* File "bin/stocks_00_shared_read_external.ml", line 32, characters 45-51: *)
-(* 32 | let run par = calc_weird_stock_tuple_par par stock1 *)
+(* File "bin/stocks_01_shared_read_external.ml", line 17, characters 45-51: *)
+(* 17 | let run par = calc_weird_stock_tuple_par par stock1 *)
 (*                                                  ^^^^^^ *)
 (* Error: This value is nonportable but is expected to be portable. *)
 

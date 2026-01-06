@@ -1,4 +1,10 @@
 (executables
- (names main add4 average profitable stocks_00_shared_read stocks_00_shared_read_external stocks_01_shared_read stocks_02_shared_read_external stocks_03_split_lst stocks_04_split_lst_external)
+ (names main add4 average
+    stocks_00_data_race.ml
+    stocks_01_shared_read.ml
+    stocks_01_shared_read_external.ml
+    stocks_02_list.ml
+    stocks_02_list_external.ml
+    stocks_03_split_lst)
  (libraries par_samples parallel parallel.scheduler)  ;; portable base stdio
 )

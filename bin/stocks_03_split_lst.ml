@@ -1,13 +1,5 @@
 open Core
-
-module Stock = struct
-  type t =
-    { price : float
-    }
-
-  let create ~price = { price }
-  let price { price; _ } = price
-end
+open Par_samples
 
 let count_penny_stocks_par (par : Parallel.t) prices threshold =
   let (left, right) = List.split_n prices (List.length prices / 2) in
