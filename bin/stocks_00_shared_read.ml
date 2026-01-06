@@ -1,12 +1,18 @@
 open Core
 
+(*  Calculate properties of a stock (is a penny stock, is a five digit stock) given its price. *)
+
+(*  Motivation: you need to know properties of a stock before you can safely work with it. *)
+(*  Calculating properties is independent of each other and also takes a long time, *)
+(*  so you parallelize the computation by instructions (same data, different instructions). *)
+
 module Stock = struct
   type t =
     { price : float
     }
 
   let create ~price = { price; }
-  let price { price; _ } = price
+  let price { price } = price
 end
 
 let calc_weird_stock_tuple_par (par : Parallel.t) stock =
@@ -26,4 +32,4 @@ let run par = calc_weird_stock_tuple_par par stock1
 
 let () =
   let (is_penny, is_five_digit) = Parallel_utils.run_one_test ~f:run in
-  Printf.printf "result: %b %b\n" is_penny is_five_digit
+  Printf.printf "result: %b %b\n" is_penny is_five_digit (* result: true false *)

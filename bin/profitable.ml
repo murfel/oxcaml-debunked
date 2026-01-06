@@ -1,9 +1,9 @@
 open Core
 
-(* Given a list of daily closing prices for a security and a threshold price, *)
-(* count the number of days when the closing price > threshold. *)
+(*  Given a list of daily closing prices for a security and a threshold price, *)
+(*  count the number of days when the closing price > threshold. *)
 
-(* Sequential version *)
+(*  Sequential version *)
 
 let prices = [3.5; 2.1; 3.3; 5.7; 1.8]
 let threshold = 2.0
@@ -15,10 +15,10 @@ let () =
   let result = count_profitable_days prices threshold in
   Printf.printf "result (sequential): %d\n" result (* result: 4 *)
 
-(* Speed up the computation by parallelizing by data: *)
-(* split the list in two, and count each part on its own domain (thread). *)
+(*  Speed up the computation by parallelizing by data: *)
+(*  split the list in two, and count each part on its own domain (thread). *)
 
-(* Incorrect parallel version (data race on `counter`) (does not compile) *)
+(*  Incorrect parallel version (data race on `counter`) (does not compile) *)
 
 (* let count_profitable_days_par (par : Parallel.t) prices threshold = *)
 (*  let count = ref 0 in *)
@@ -36,7 +36,7 @@ let () =
 (*  !count *)
 (* ;; *)
 
-(* Correct parallel version *)
+(*  Correct parallel version *)
 
 let count_profitable_days_par (par : Parallel.t) prices threshold =
   let (left, right) = List.split_n prices (List.length prices / 2) in

@@ -6,7 +6,7 @@ module Stock = struct
     }
 
   let create ~price = { price }
-  let price { price; _ } = price
+  let price { price } = price
 end
 
 let count_weird_stocks_par (par : Parallel.t) stocks =

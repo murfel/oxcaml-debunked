@@ -3,4 +3,4 @@ type t =
   }
 
 let create ~price = { price; }
-let price { price; _ } = price
+let price { price } = price
