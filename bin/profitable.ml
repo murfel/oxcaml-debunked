@@ -1,7 +1,7 @@
 open Core
 
-(* Given a list of daily closing prices for a security and and threshold price, *)
-(* count the number of days when price > threshold. *)
+(* Given a list of daily closing prices for a security and a threshold price, *)
+(* count the number of days when the closing price > threshold. *)
 
 (* Sequential version *)
 
