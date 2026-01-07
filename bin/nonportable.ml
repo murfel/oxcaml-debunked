@@ -8,7 +8,7 @@ let run_par (par : Parallel.t) =
       (fun _par -> f)
       (fun _par -> f)
   in
-  r1 + r2
+  (r1, r2)
 
 let run par = run_par par
 
@@ -20,5 +20,5 @@ let run_one_test ~(f : Parallel.t @ local -> 'a) : 'a =
   result
 
 let () =
-  let result = run_one_test ~f:run in
-  Printf.printf "result: %d\n" result
+  let (r1, r2) = run_one_test ~f:run in
+  Printf.printf "result: %d %d\n" r1 r2
