@@ -1,5 +1,9 @@
 (executables
- (names main add4 average
+ (names
+    main
+    add4
+    average
+    nonportable
     stocks_00_data_race
     stocks_01_shared_read
     stocks_01_shared_read_external
