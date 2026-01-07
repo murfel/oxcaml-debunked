@@ -1,6 +1,4 @@
-type t =
-  { price : float
-  }
+type t = { price : float }
 
-let create ~price = { price; }
+let create ~price = { price }
 let price { price } = price

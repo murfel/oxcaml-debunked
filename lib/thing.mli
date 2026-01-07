@@ -7,8 +7,7 @@ module Mood : sig
     | Sad
 end
 
-val create : price:float -> mood:Mood.t -> t @ portable
-  @@ portable
+val create : price:float -> mood:Mood.t -> t @ portable @@ portable
 val price : t @ contended -> float @@ portable
 val mood : t -> Mood.t
 val cheer_up : t -> unit

@@ -1,14 +1,14 @@
 (executables
  (names
-    main
-    add4
-    average
-    nonportable
-    stocks_00_data_race
-    stocks_01_shared_read
-    stocks_01_shared_read_external
-    stocks_02_list
-    stocks_02_list_external
-    stocks_03_split_lst)
- (libraries par_samples parallel parallel.scheduler)  ;; portable base stdio
-)
+  main
+  add4
+  average
+  nonportable
+  stocks_00_data_race
+  stocks_01_shared_read
+  stocks_01_shared_read_external
+  stocks_02_list
+  stocks_02_list_external
+  stocks_03_split_lst)
+ (libraries par_samples parallel parallel.scheduler) ;; portable base stdio
+ )
