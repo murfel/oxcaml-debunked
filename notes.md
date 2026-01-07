@@ -30,7 +30,7 @@ Thing.price x;;
 ```
 
 
-To get the compiler tree dump like `stocks_01_shared_read_compiler_tree_dump.txt`, modify `bin/dune`:
+To get the compiler tree dump, modify `bin/dune`:
 ```dune
  (names stocks_01_shared_read)  ;; only leave the module you want
  (flags (:standard -principal -dtypedtree))
