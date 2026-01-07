@@ -6,6 +6,8 @@ open Core
 (*  Calculating properties is independent of each other and also takes a long time, *)
 (*  so you parallelize the computation by instructions (same data, different instructions). *)
 
+(*  This compiles. *)
+
 module Stock = struct
   type t =
     { price : float

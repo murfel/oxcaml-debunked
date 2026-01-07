@@ -5,12 +5,3 @@ let run_one_test ~(f : Parallel.t @ local -> 'a) : 'a =
   Scheduler.stop scheduler;
   result
 ;;
-
-
-let rec count_if (lst @ contended) ~f =
-  match lst with
-    | [] -> 0
-    | x :: xs ->
-      let acc = count_if xs ~f in
-        if f x then 1 + acc else acc
-;;
