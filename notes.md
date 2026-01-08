@@ -8,6 +8,8 @@
   - activities 1-4 (atomics + capsules, not portability/contention in particular) https://github.com/oxcaml/tutorial-icfp25/tree/main/handson_activity
 - https://youtu.be/kuoT6CrSY70?si=S1aEHfuNffIs_6Je&t=233
 - https://dl.acm.org/doi/epdf/10.1145/3704859
+- https://discuss.ocaml.org/tag/oxcaml
+- https://discord.com/channels/436568060288172042/1384000429582717039 (ocaml discord, #oxcaml)
 
 > ... **Base functions are annotated with modes, but the OCaml stdlib is not**. The answer right now is to **always use Base with OxCaml**.
 https://anil.recoil.org/notes/icfp25-oxcaml
