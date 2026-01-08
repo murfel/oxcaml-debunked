@@ -20,25 +20,36 @@ let () =
 (*  Speed up the computation by parallelizing by data: *)
 (*  split the list in two, and count each part on its own domain (thread). *)
 
-(*  Incorrect parallel version (data race on `counter`) (does not compile) *)
+(*  Incorrect parallel version (data race on `counter`) *)
+
+(*  Does not compile. *)
+
+(* 35 |       (fun _par -> count_profitable_days_inner right) *)
+(*                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^ *)
+(* Error: The value count_profitable_days_inner is nonportable *)
+(*       because it contains a usage (of the value count at File "bin/stocks_00_data_race.ml", line 29, characters 69-74) *)
+(*       which is expected to be uncontended. *)
+(*       However, the highlighted value count_profitable_days_inner is expected to be portable *)
+(*       because it is used inside a function which is expected to be portable *)
 
 (* let count_profitable_days_par (par : Parallel.t) prices threshold = *)
 (*  let count = ref 0 in *)
-(*  let (left, _right) = List.split_n prices (List.length prices / 2) in *)
-(*  let count_profitable_days lst = *)
-(*    List.iter lst ~f:(fun price -> *)
-(*      if Float.(price > threshold) *)
-(*      then count := !count + 1) *)
+(*  let left, right = List.split_n prices (List.length prices / 2) in *)
+(*  let count_profitable_days_inner lst = *)
+(*    List.iter lst ~f:(fun price -> if Float.(price > threshold) then count := !count + 1) *)
 (*  in *)
 (*  let _ = *)
-(*    Parallel.fork_join2 par *)
-(*      (fun _par -> count_profitable_days left) *)
-(*      (fun _par -> count_profitable_days right) *)
+(*    Parallel.fork_join2 *)
+(*      par *)
+(*      (fun _par -> count_profitable_days_inner left) *)
+(*      (fun _par -> count_profitable_days_inner right) *)
 (*  in *)
 (*  !count *)
 (* ;; *)
 
 (*  Correct parallel version *)
+
+(*  Compiles *)
 
 let count_profitable_days_par (par : Parallel.t) prices threshold =
   let left, right = List.split_n prices (List.length prices / 2) in
