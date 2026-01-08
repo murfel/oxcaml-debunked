@@ -1,4 +1,4 @@
-(*  Compiles. *)
+(*  Compiles *)
 
 let run (par : Parallel.t) =
   let x = ref 0 in
