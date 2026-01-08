@@ -3,7 +3,9 @@
   main
   add4
   average
-  nonportable
+  ref_global_bad
+  ref_local_f_local_good
+  ref_local_f_global_good
   stocks_00_data_race
   stocks_01_shared_read
   stocks_01_shared_read_external
