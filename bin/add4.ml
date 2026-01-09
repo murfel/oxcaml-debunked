@@ -9,5 +9,5 @@ let test_add4 par = add4 par 1 10 100 1000
 
 let () =
   let result = Parallel_utils.run_one_test ~f:test_add4 in
-  Printf.printf "result: %d\n" result
+  Printf.printf "result: %d\n" result (* result: 1111 *)
 ;;

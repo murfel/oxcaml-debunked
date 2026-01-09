@@ -1,12 +1,12 @@
 open Core
 
-(*  Calculate properties of a stock (is a penny stock, is a five digit stock) given its price. *)
+(*  Calculate properties of a stock (is a penny stock, is a five-digit stock) given its price. *)
 
-(*  Motivation: you need to know properties of a stock before you can safely work with it. *)
+(*  Motivation: you need to know the properties of a stock before you can safely work with it. *)
 (*  Calculating properties is independent of each other and also takes a long time, *)
 (*  so you parallelize the computation by instructions (same data, different instructions). *)
 
-(*  This compiles. *)
+(*  Compiles. *)
 
 module Stock = struct
   type t = { price : float }
