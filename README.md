@@ -100,6 +100,8 @@ Note that the blue horizontal lines do not necessarily mean that each computatio
 ![fork-join](pictures/fork-join.png)
 
 ### Domain-preservation property
+**Disclaimer**: this is my best-effort logical assumption on how fork-join works. I unfortunately haven't been able to fully comprehend the parallel library implementations yet in the short span of time devoted to this tutorial. To be fact-checked by more experienced people.
+
 OxCaml's **fork-join preserves the domain of execution for the first forked computation** passed to the `Parallel.fork_join*` function.
 
 This incredibly important property allows us to use mutable states between fork-join computations on the same *line*, since it is guaranteed to be executed on the same domain. We'll cover that later in more detail.
