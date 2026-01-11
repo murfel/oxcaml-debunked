@@ -8,13 +8,13 @@ OCaml 5.0 introduced multicore support. Multicore here means multithreaded (mult
 
 OCaml uses the term **domain** which roughly corresponds to a thread. We use the terms **multicore**, **multidomain**, and **parallel** to mean the same thing. Other programming languages use the term *multithreaded*. And sometimes, confusingly, *concurrent* is also used to mean parallel.
 
-### Multidomain vs multiprocess vs concurrent
+### Multidomain is different from multiprocess and asynchronous
 
 There exist multiple paradigms to speed up or structure computations.
 
 **Multiprocess** computing allows creating subprograms that execute on multiple cores (as scheduled by the OS) and communicate with each other via shared memory, but they do not share memory like domains do. Communication between processes is possible via IPC primitives like pipes, but is much slower than accessing the same memory locations in domains.
 
-**Asynchronous** (or sometimes **concurrent**, confusingly) computation frameworks (e.g. the Async library) can work with a single thread and stash waiting IO computations so that the thread can be used for other computations before the IO results are actually needed. Multidomain computing in OxCaml is meant to be used for CPU-intensive computations when each core is expected to be fully utilized, rather than waiting for IO.
+**Asynchronous** (or sometimes **concurrent**, confusingly) computation frameworks (e.g. the Async library) can work with a single thread and stash waiting IO computations so that the thread can be used for other computations before the IO results are actually needed. In contrast, multidomain computing in OxCaml is meant to be used for CPU-intensive computations when each core is expected to be fully utilized, rather than waiting for IO.
 
 All these paradigms can often be combined. But here we will focus on multidomain computing only.
 
@@ -55,6 +55,8 @@ Here we pass two computations: `a + b` and `c + d` into `Parallel.fork_join2`, w
 By waiting until both computations finish, we mean that, unlike under asynchronous execution, the current thread will not be executing any following instructions until both computations finish. Also, there's neither the active nor blocking waiting, that you might be familiar with from other languages, is happening. In fact, in `fork_join2`, the current thread will also participate in computing the submitted computations.
 
 We also pass `par: Parallel.t`, which is an object that allows the scheduler to control the parallel computations.
+
+Note: here we use another new feature of OxCaml, [unboxed types](https://oxcaml.org/documentation/unboxed-types/01-intro/). `fork_join2` returns an unboxed tuple, so we pattern match an unboxed tuple with `let #(x, y) = ...`, so that the labels `x` and `y` now refer to the boxed values that we can use to contruct the return value.
 
 ```ocaml
 let add4 (par : Parallel.t) a b c d =
@@ -189,7 +191,7 @@ TODO
 
 ### Contention and portability
 
-Recall that *modes* are a set of annotations that constrain how a value may be used, that are infered and type-checked at compile time. Contention and portability are two mode axes.
+Recall that *modes* are a set of annotations that constrain how a value may be used, that are inferred and type-checked at compile time. Contention and portability are two mode axes.
 
 We've written two correct parallel programs and haven't used any portability or contention annotations. Fortunately, so far, the compiler was able to infer such annotations on its own and prove the correctness of those programs. Let's discuss what these annotations are and then look at cases when the compiler is unable to infer annotations for correct programs, and we need to add annotations manually.
 
