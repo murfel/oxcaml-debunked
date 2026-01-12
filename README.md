@@ -208,9 +208,7 @@ Contention mode applies to values containing **data** and describes privileges f
 
 Contention mode only applies to values that contain a **mutable state**. Indeed, an immutable value can always be safely read by multiple domains, so annotations become irrelevant. We say **immutable values cross contention** to mean that immutable values can be treated both as contended and uncontended values.
 
-A value in the uncontended mode gives a privilege to a single domain to read or write to such a value. A value in the contended mode gives a guarantee that the value cannot be modified or read.
-
-Immutable values are often used in the contended moƒde, since this is the most restrictive mode which gives the most guarantees and more usability (multiple domains can access the value). The immutable values do not need to claim any of the privileges provided by the uncontended mode: they cannot be written to because they are immutable, and they can be read from by any domain because they cross contention.
+A value in the uncontended mode gives a privilege to a current domain to read or write to such a value, and restricts and other domains from any access. A value in the contended mode gives a guarantee that the value cannot be modified or read by the current domain.
 
 Let's see some examples.
 
@@ -223,7 +221,7 @@ let get_plus_one_cont (x @ contended) = x + 1
 let get_plus_one_uncont (x @ uncontended) = x + 1
 ```
 
-Now we'd like to write a similar function for a reference, a mutable value. `get_plus_one_ref_cont` won't compile, `r` must be uncontended for even for read access, since it's mutable, but we explicitly claim that the parameter is contended, so the compiler infers a contradiction and rejects the program. `get_plus_one_ref_uncont r_cont` won't compile either, because now the function definition is correct, but our use of the function isn't: we are passing a contended argument to a function requiring an uncontended one.
+Now we'd like to write a similar function for a reference, a mutable value. `get_plus_one_ref_cont` won't compile, `r` must be uncontended even for read access, since it's mutable, but we explicitly claim that the parameter is contended, so the compiler infers a contradiction and rejects the program. `get_plus_one_ref_uncont r_cont` won't compile either, because now the function definition is correct, but our use of the function isn't: we are passing a contended argument to a function requiring an uncontended one.
 ```ocaml
 let r_cont @ contended = ref 0
 let r_uncont @ uncontended = ref 0
@@ -242,7 +240,7 @@ let get_plus_one_ref_uncont (r @ uncontended) = !r + 1
 get_plus_one_ref_uncont r (* Compiles *)
 ```
 
-What's the point of contended mutable values, if you can neither read nor write them, you may ask. Imagine we have a stock record type. It has an immutable price field and a mutable trading speed field. We'd like to spawn multiple domains that will read the price field and also have one domain read and write the trading speed field. In this case, the group of reader domains will accept the stock as a contended value, and the writer domain will accept the stock as an uncontended value. In the reader domains, the mutable trading speed field will be treated as contended, which is a guarantee that no reader domains will read or modify it.
+What's the point of contended mutable values, if you can neither read nor write them, you may ask. Imagine we have a stock record type. It has an immutable price field and a mutable trading speed field. We'd like to spawn multiple domains that will read the price field and also have one domain write to the trading speed field. In this case, the group of reader domains will accept the stock as a contended value, and the writer domain will accept the stock as an uncontended value. In the reader domains, the mutable trading speed field will be treated as contended, which is a guarantee that no reader domains will read or modify it.
 
 ```ocaml
 module Stock = struct
@@ -259,9 +257,9 @@ end
 
 let stock = Stock.create ~price:17.29 ~trading_speed:0.10
 
-let calc_price_properties stock = Stock.price stock < 1.0
+let calc_price_properties (stock @ contended) = Stock.price stock < 1.0
 
-let adjust_trading_speed stock =
+let adjust_trading_speed (stock @ uncontended) =
   if Stock.price stock > 100000.0
   then Stock.set_trading_speed stock 0.0
   else Stock.set_trading_speed stock 1.0
@@ -344,7 +342,7 @@ let f x = x + 1 @@ portable
 let f x = x + 1 @@ nonportable
 
 let r = ref 0
-let f = r := 42 @@ nonportable
+let f () = r := 42 @@ nonportable
 ```
 
 ### Contention and portability reference
