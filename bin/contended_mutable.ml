@@ -13,9 +13,9 @@ end
 (* let is_penny_stock stock = Float.(Stock.price stock < 1.0) *)
 (* let is_five_digit_stock stock = Float.(Stock.price stock >= 10000.0) *)
 
-let calc_price_properties stock = Stock.price stock < 1.0
+let calc_price_properties (stock @ contended) = Stock.price stock < 1.0
 
-let adjust_trading_speed stock =
+let adjust_trading_speed (stock @ uncontended) =
   if Stock.price stock > 100000.0
   then Stock.set_trading_speed stock 0.0
   else Stock.set_trading_speed stock 1.0
