@@ -208,9 +208,9 @@ Contention mode applies to values containing **data** and describes privileges f
 
 Contention mode only applies to values that contain a **mutable state**. Indeed, an immutable value can always be safely read by multiple domains, so annotations become irrelevant. We say **immutable values cross contention** to mean that immutable values can be treated both as contended and uncontended values.
 
-A value in an uncontended mode gives a privilege to a single domain to read or write to such a value. A value in the contended mode gives a guarantee that the value cannot be modified or read.
+A value in the uncontended mode gives a privilege to a single domain to read or write to such a value. A value in the contended mode gives a guarantee that the value cannot be modified or read.
 
-Immutable values are often used in the contended mode, since this is the most restrictive mode which gives the most guarantees and more usability (multiple domains can access the value). The immutable values do not need to claim any of the privileges provided by the uncontended mode: they cannot be written to because they are immutable, and they can be read from by any domain because they cross contention.
+Immutable values are often used in the contended moƒde, since this is the most restrictive mode which gives the most guarantees and more usability (multiple domains can access the value). The immutable values do not need to claim any of the privileges provided by the uncontended mode: they cannot be written to because they are immutable, and they can be read from by any domain because they cross contention.
 
 Let's see some examples.
 
@@ -440,9 +440,9 @@ val fork_join2
   -> #('a * 'b)
 ```
 
-The fisrt argument to any function within the `fork_join*` family could be nonportable.
+The first argument to any function within the `fork_join*` family could be nonportable.
 
-This helps us rewrite our example above to the following. Here `x := 42; !x` in nonportable, but `fork_join*` is ok with this.
+This helps us rewrite our example above to the following. Here `x := 42; !x` is nonportable, but `fork_join*` is ok with this.
 ```ocaml
 (* Compiles *)
 let run (par : Parallel.t) =
@@ -466,12 +466,12 @@ let run (par : Parallel.t) =
     Parallel.fork_join2 par
       (fun _par -> x := 42; !x)
       (fun _par -> let y = ref 0 in 
-                     let #(inner_r1, inner_r2) = 
+                   let #(inner_r1, inner_r2) = 
                      Parallel.fork_join2 par 
                        (fun _par -> y := 17; !y) 
                        (fun _par -> 29)
-                     in
-                     inner_r1, inner_r2)
+                   in
+                   inner_r1, inner_r2)
   in
   result1, result2  (* result: (42, (17, 29))) *)
 ;;
