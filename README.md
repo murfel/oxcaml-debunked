@@ -201,14 +201,40 @@ We've written two correct parallel programs and haven't used any portability or 
 
 Some of the concepts related to contention and portability are somewhat circular, but we did our best to come up with a linear explanation. We recommend speeding through this section on the first read to get a general feel and then re-reading it more thoughtfully for the second time.
 
-#### Contention
-Contention mode axis defines two annotations: `@ contended` and `@ uncontended` (it actually also defines a third annotation, `@ shared`, which we do not cover here).
+#### Anatomy of a value
+A tiny OCaml terminology refresher. `x`, `r`, `f`, and `tuple` are all values.
 
-Contention mode applies to values containing **data** and describes privileges for domains for reading and writing to such a value.
+```ocaml
+let x = 42
+let r = ref 0
+let f x = x + 1
+let tuple = (ref 0, f)
+```
+
+Each value has parts which are functions, recursively, and which are data, recursively. Some parts may be empty.
+
+#### Contention
+```ocaml
+let x @ contended = 42
+let r @ uncontended = ref 0
+```
+- Applies to mutable data, or values that contain mutable data.
+- Functions and immutable data cross contention.
+- Describes privileges for domains for reading and writing to such a value.
+- `@ uncontended` is a privilege to read or write to a value, by the current domain only.
+- `@ contended` is a guarantee that the value cannot be modified or read by the current domain.
+
+##### Formal definition
+1. At most one domain may consider a value **uncontended**.
+2. Reading from or writing into a value is only allowed if the enclosing term is **uncontended**.
+3. (R/W privilege drop.) An **uncontended** value may be treated as **contended**.
+4. (Deepness.) Any component of a **contended** value is **contended**.
+
+Contention mode axis defines two annotations: `@ contended` and `@ uncontended` (it actually also defines a third annotation, `@ shared`, which we do not cover here).
 
 Contention mode only applies to values that contain a **mutable state**. Indeed, an immutable value can always be safely read by multiple domains, so annotations become irrelevant. We say **immutable values cross contention** to mean that immutable values can be treated both as contended and uncontended values.
 
-A value in the uncontended mode gives a privilege to a current domain to read or write to such a value, and restricts and other domains from any access. A value in the contended mode gives a guarantee that the value cannot be modified or read by the current domain.
+A value in the uncontended mode gives a privilege to a current domain to read or write to such a value and restricts all other domains from reading and writing. A value in the contended mode gives a guarantee that the value cannot be modified or read by the current domain.
 
 Let's see some examples.
 
@@ -284,23 +310,39 @@ let get_plus_one_ref_cont (r @ contended) = !r + 1
 ```
 
 #### Portability
+```ocaml
+let f x = x + 1 @@ portable
+let (lst @ portable) = [f; f; f]
+
+let r = ref 0
+let g () = !r + 1 @@ nonportable
+let (tuple @ nonportable) = (42, g)
+
+```
+- Applies to functions (`@@ portable` / `@@ nonportable`) and values containing functions (`@ portable` / `@ nonportable`).
+- Data crosses portability.
+- Describes restrictions on whether a function may be invoked in multiple domains.
+- `portable` is a permission to use a function (or a value containing a function) in multiple domains and a guarantee that it will behave well: not access any shared mutable state in the uncontended mode.
+- `nonportable` is a restriction to using a function (or a value containing a function) in the same domain where it was defined.
+
+##### Formal definition
+1. Only a **portable** value is safe to access outside the domain that created it.
+2. If **portable** refers to a value outside its own definition,
+- that value must be **portable**;
+- the value is treated as **contended**.
+3. (Usage permission drop.) A **portable** value may be treated as **nonportable**.
+4. (Deepness.) Any component of **portable** must be **portable**.
+
 Portability mode axis defines two annotations:
 - written with a double @@: `@@ portable` and `@@ nonportable` when applied to functions;
 - with a single @: `@ portable` and `@ nonportable` when applied to values possibly containing functions.
 
-Portability mode applies to functions and describes restrictions on whether a function may be invoked in multiple domains.
-
 Let's take a look at some functions and values possibly containing functions, like lists, tuples, arrays, variants, and records.
 
-TODO: add a record example
-
-TODO: elaborate on "possibly containing functions" (some records may contain functions even if it's not straight away obvious, so we have to annotate almost all values)
-
 ```ocaml
-(*  Examples of functions and values possibly containing functions. *)
-(*  @@ portable/@@ nonportable and @ portable/@ nonportable applies. *)
-
-let f x = x + 1 (* a function *)
+(*  A function *)
+let f x = x + 1
+(*  Value containing a function *)
 let lst = [f; f; f]
 let func_and_arg_tuple = (fun y -> y + 1, 42)
 let functions_array = [|
@@ -308,76 +350,41 @@ let functions_array = [|
   (fun x -> x * 2); 
   (fun x -> x * x);
 |]
-
-(* NOTE: portable/nonportable does not apply to types.
-It only applies to functions or values. 
-It will apply to values of this particular type, since it may contain a function *)
-type func_or_arg =
-  | Func of (int -> int)
-  | Arg of int
-;;
-
-let variant1 = Arg 42  (* portable/nonportable applies because may contain a function *)
-let variant2 = Func f
-
-let array_of_variants = [|  (* portable/nonportable applies *)
-  Arg 42; 
-  Arg 42;
-  Arg 42;
-|]
 ```
 
 **From now on, we will say "a function" meaning "a function or a value possibly containing a function."**
 
-TODO: rephrase nonportable (too hard to comprehend)
-
-**Portable** functions can be used in multiple domains and guarantee that they do not access any shared mutable state. **Nonportable** functions may access shared mutable state and thus can only be used in the domain where those functions were defined.
+A **portable** function can be invoked in multiple domains and guarantees that it does not access any shared mutable state. A **nonportable** function may access a shared mutable state and thus can only be invoked in the domain where it was defined.
 
 Let's take a look at under which modes we can use various functions.
 
-TODO: portability examples (a good example set will probably contain a note on why arguments to a function are "inside the function definition")
+Here `f1` is portable. We only need to check rules 2 and 4: rule 2 check as it doesn't refer to any value outside its own definition, and rule 4 check as it's a function and doesn't have any components.
+
+`f2` is the same as `f1`, and it can be treated as nonportable, according to rule 3.
+
+`f3` is nonportable, as it refers to a value outside its own definition, `r`, which is uncontended since it is mutable and requires read access.
+
+`f4` is almost like `f3` but it `local_r` is now a value inside the function definition, so the function becomes portable. Arguments to a function are considered "inside the function definition."
+
+`tuple` is portable since it consists of a portable function and data, which crosses contention.
+
+`x` can also be treated as both portable and nonportable, since it doesn't contain any functions (crosses contention).
 
 ```ocaml
-let f x = x + 1 @@ portable
-let f x = x + 1 @@ nonportable
+let f1 x = x + 1 @@ portable
+let f2 x = x + 1 @@ nonportable
 
 let r = ref 0
-let f () = r := 42 @@ nonportable
+let f3 () = r := 42 @@ nonportable
+
+let f4 local_r := !local_r + 1 @@ portable
+
+let (tuple @ portable) = (f1, 42)
+
+let x = 42
 ```
 
-### Contention and portability reference
-Here's a summary of the above discussion and the formal rules checked by the compiler for a quick reference. Feel free to check that the interpretation adheres to the rules.
-
-#### Contention summary (uncontended - contended)
-##### Interpretation
-- Applies to data.
-- Immutable values cross contention (usually used as `@ contended`).
-- `@ uncontended` is a privilege to read or write to a value, by a single domain.
-- `@ contended` is a guarantee that the value cannot be modified or read.
-
-##### Rules
-1. At most one domain may consider a value **uncontended**.
-2. Reading from or writing into a value is only allowed if the enclosing term is **uncontended**.
-3. (R/W privilege drop.) An **uncontended** value may be treated as **contended**.
-4. (Deepness.) Any component of a **contended** value is **contended**.
-
-#### Portability summary (portable - nonportable)
-##### Interpretation
-- Applies to functions (`@@ portable` / `@@ nonportable`) and values containing functions (`@ portable` / `@ nonportable`).
-- `portable` is a permission to use a function (or a value containing a function) in multiple domains and a guarantee that it will behave well: not access any shared mutable state in the uncontended mode.
-- `nonportable` is a restriction to using a function (or a value containing a function) in the same domain where it was defined.
-
-##### Rules
-1. Only a portable value is safe to access outside the domain that created it.
-2. If **portable** refers to a value outside its own definition,
-  - that value must be **portable**;
-  - the value is treated as **contended**.
-3. (Usage permission drop.) A **portable** value may be treated as **nonportable**.
-4. (Deepness.) Any component of **portable** must be **portable**.
-
-TODO: understand if the different wording of "must be" and "is treated as" actually encodes a distinction.
-
-### Arguments to a function are "inside the function definition"
+### Contention and portability prevent data races
 TODO
 
 ### Portability and contention in the fork-join model
