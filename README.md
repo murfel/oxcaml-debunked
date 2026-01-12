@@ -38,7 +38,7 @@ Due to how CPUs are designed, this situation can lead to unexpected results. Mor
 
 In the program above, the value of `x` could be `1`, `2`, or anything else and some other unexpected things might happen, depending on compiler and language guarantees.
 
-### Multicore OxCaml guarantees data race freedom
+### Multicore OxCaml guarantees data race freedom via portability and contention modes
 
 OxCaml brings an extension to multicore OCaml to ensure data race freedom in **compile time**. If an OxCaml program has compiled successfully, it is guaranteed that no data race can occur in the program. This is achieved by introducing **portability** and **contention** modes.
 
@@ -50,9 +50,9 @@ OxCaml's `parallel` library uses a fork-join model for multidomain execution. Un
 
 #### Example
 
-Here we pass two computations: `a + b` and `c + d` into `Parallel.fork_join2`, wait until both of them finish, and sum their results. When we submit `test_add4` to the scheduler, it will assign domains to run these computations. These might be two different domains, or a single domain might run both computations.
+Here we pass two computations: `a + b` and `c + d` into `Parallel.fork_join2`, and once both of them finish, we sum their results and return. When we submit `test_add4` to the scheduler, it will assign domains to run these computations. These might be two different domains, or a single domain might run both computations.
 
-By waiting until both computations finish, we mean that, unlike under asynchronous execution, the current thread will not be executing any following instructions until both computations finish. Also, there's neither the active nor blocking waiting, that you might be familiar with from other languages, is happening. In fact, in `fork_join2`, the current thread will also participate in computing the submitted computations.
+Unlike under asynchronous execution that you might be familiar with from the Async library, the current thread will not be executing any following instructions until both computations finish. In fact, the current thread will also participate in computing the submitted computations.
 
 We also pass `par: Parallel.t`, which is an object that allows the scheduler to control the parallel computations.
 
@@ -99,7 +99,7 @@ Note that the blue horizontal lines do not necessarily mean that each computatio
 
 ![fork-join](pictures/fork-join.png)
 
-### Domain-preservation property
+#### Domain-preservation property
 **Disclaimer**: this is my best-effort logical assumption on how fork-join works. I unfortunately haven't been able to fully comprehend the parallel library implementations yet in the short span of time devoted to this tutorial. To be fact-checked by more experienced people.
 
 OxCaml's **fork-join preserves the domain of execution for the first forked computation** passed to the `Parallel.fork_join*` function.
@@ -187,9 +187,11 @@ By correct programs we mean programs that do not contain data races.
 
 In this tutorial we only consider those correct programs which also do not use shared mutable state.
 
-So let's briefly describe the set of such programs, and then we'll empirically convince ourselves that the portability and contention rules indeed describe the same set of correct programs. That is, the compiler will accept all the programs we expect to be correct and reject all the other ones.
+**Disclaimer**: the fork-join model forbids global mutable state access. This immediately excludes many icky scenarios and makes it so much easier to verify contention and portability. I haven't done research to understand how contention and portability play out outside the fork-join restrictions. Contention rules require that if a value is ever mutated, all modifications and reads must be done in a single domain. This requirement is stricter than necessary to guarantee data-race freedom. E.g., the OCaml's [happens-before relationship](https://ocaml.org/manual/5.4/memorymodel.html#s:happens_before) allows reading from a value written to by a joined domain. Would these domains count as separate domains for the contention purposes, and thus prohibit such a data-race free program? Or is there some domain fusing happening to fuse accesses made from joined domains together to become a single domain? Or should this issue even not be given much airtime, in case using the fork-join is the only approved way to parallelize code in OxCaml? Because of this uncertainty, I do not go into details on why contention and portability rules make sense, since the answer depends on the questions above. This section should be expanded.
 
-TODO
+Ideally, we'd like to describe the set of all correct programs without a shared mutable state, introduce portability and contention rules, and then prove that these rules are both necessary and sufficient to guarantee data-race freedom.
+
+However, currently we will only show sufficiency. I.e., under these rules, no data races can occur.
 
 ### Contention and portability
 
@@ -200,7 +202,7 @@ We've written two correct parallel programs and haven't used any portability or 
 Some of the concepts related to contention and portability are somewhat circular, but we did our best to come up with a linear explanation. We recommend speeding through this section on the first read to get a general feel and then re-reading it more thoughtfully for the second time.
 
 #### Contention
-Contention mode axis defines two annotations: `@ contended` and `@ uncontended`.
+Contention mode axis defines two annotations: `@ contended` and `@ uncontended` (it actually also defines a third annotation, `@ shared`, which we do not cover here).
 
 Contention mode applies to values containing **data** and describes privileges for domains for reading and writing to such a value.
 
@@ -212,47 +214,81 @@ Immutable values are often used in the contended mode, since this is the most re
 
 Let's see some examples.
 
-Recall that `ref` is a record with a single mutable field.
-
-Let's consider a few quick examples. Out of the following definitions, only `let get_plus_one_ref_cont (r @ contended) = !r + 1` will not compile: `r` must be uncontended for read access, since it's mutable.
-
+We'd like to write a function which reads an immutable value and returns its increment. Any combination of these functions and values would compile, since immutable values cross contention.
 ```ocaml
 let x_cont @ contended = 42
 let c_uncont @ uncontended = 42
 
-let lst_cont @ contended = [ 1; 2; 3 ]
-let lst_uncont @ uncontended = [ 1; 2; 3 ]
-
-let r_cont @ contended = ref 0 (*  Useless. Cannot read or write. *)
-let r_uncont @ uncontended = ref 0
-
-let ref_lst_cont @ contended = [ ref 0; ref 0; ref 0 ]
-let ref_lst_uncont @ uncontended = [ ref 0; ref 0; ref 0 ]
-
-let len_cont (lst @ contended) = List.length lst
-let len_uncont (lst @ uncontended) = List.length lst
-
 let get_plus_one_cont (x @ contended) = x + 1
 let get_plus_one_uncont (x @ uncontended) = x + 1
-
-(* let get_plus_one_ref_cont (r @ contended) = !r + 1 *)  (* Does not compile *)
-let get_plus_one_ref_uncont (r @ uncontended) = !r + 1
 ```
 
-If we actually attempt to pass all possible arguments to all possible functions defined in the above examples, only `len_uncont ref_lst_cont` and `get_plus_one_ref_uncont r_cont` will not compile.
+Now we'd like to write a similar function for a reference, a mutable value. `get_plus_one_ref_cont` won't compile, `r` must be uncontended for even for read access, since it's mutable, but we explicitly claim that the parameter is contended, so the compiler infers a contradiction and rejects the program. `get_plus_one_ref_uncont r_cont` won't compile either, because now the function definition is correct, but our use of the function isn't: we are passing a contended argument to a function requiring an uncontended one.
+```ocaml
+let r_cont @ contended = ref 0
+let r_uncont @ uncontended = ref 0
 
-Note that if we have a mutable state in a value, we cannot pretend that it is immutable, slap `@ contended` on it, and expect to be able to read the value from multiple domains. If we want to use a mutable state at all, it must be uncontended and accessed from a single domain.
+let get_plus_one_ref_cont (r @ contended) = !r + 1 (* Does not compile *)
+let get_plus_one_ref_uncont (r @ uncontended) = !r + 1
+
+get_plus_one_ref_uncont r_cont (* Does not compile *)
+get_plus_one_ref_uncont r_uncont (* Compiles *)
+```
+
+Note that usually value definitions won't have annotations. Rather, the compiler infers that our usages of the values are correct. This compiles:
+```ocaml
+let r = ref 0 (* Just r, no mode assigned at definition *)
+let get_plus_one_ref_uncont (r @ uncontended) = !r + 1
+get_plus_one_ref_uncont r (* Compiles *)
+```
+
+What's the point of contended mutable values, if you can neither read nor write them, you may ask. Imagine we have a stock record type. It has an immutable price field and a mutable trading speed field. We'd like to spawn multiple domains that will read the price field and also have one domain read and write the trading speed field. In this case, the group of reader domains will accept the stock as a contended value, and the writer domain will accept the stock as an uncontended value. In the reader domains, the mutable trading speed field will be treated as contended, which is a guarantee that no reader domains will read or modify it.
+
+```ocaml
+module Stock = struct
+  type t =
+    { price : float
+    ; trading_speed : float ref
+    }
+
+  let create ~price ~trading_speed = { price; trading_speed = ref trading_speed }
+  let price { price; _ } = price
+  let _trading_speed t = !(t.trading_speed)
+  let set_trading_speed t v = t.trading_speed := v
+end
+
+let stock = Stock.create ~price:17.29 ~trading_speed:0.10
+
+let calc_price_properties stock = Stock.price stock < 1.0
+
+let adjust_trading_speed stock =
+  if Stock.price stock > 100000.0
+  then Stock.set_trading_speed stock 0.0
+  else Stock.set_trading_speed stock 1.0
+;;
+
+(* Writer domain W *)
+adjust_trading_speed stock 
+
+(* Reader domain R1 *)
+calc_price_properties1 stock 
+
+(* Reader domain R2 *)
+calc_price_properties2 stock 
+```
+
+We'd like to reiterate that if we have a mutable state in a value, we cannot pretend that it is immutable, slap `@ contended` on it, and expect to be able to read the value from multiple domains. If we want to use a mutable state at all, it must be uncontended and accessed from a single domain. The `@ contended` annotation allows us to verifiably ignore the mutable value, say, when it's part of a record with some immutable fields we'd like to read from multiple domains.
 
 ```ocaml
 (*  Does not compile *)
 (*  Even a read access from mutable state is not allowed.*)
-let get_plus_one_ref_uncont (r @ contended) = !r + 1
+let get_plus_one_ref_cont (r @ contended) = !r + 1
 ```
 
-TODO: elaborate on why `len_uncont ref_lst_cont` fails, and why having `r_cont` might be useful (e.g., we want to have a contended record, but it has a mutable field, which we are happy to ignore).
-
 #### Portability
-Portability mode axis defines two annotations, written with a double @@: `@@ portable` and `@@ nonportable` when applied to functions and with a single @: `@ portable` and `@ nonportable` when applied to values possibly containing functions.
+Portability mode axis defines two annotations:
+- written with a double @@: `@@ portable` and `@@ nonportable` when applied to functions;
+- with a single @: `@ portable` and `@ nonportable` when applied to values possibly containing functions.
 
 Portability mode applies to functions and describes restrictions on whether a function may be invoked in multiple domains.
 
