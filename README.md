@@ -56,7 +56,7 @@ Unlike under asynchronous execution that you might be familiar with from the Asy
 
 We also pass `par: Parallel.t`, which is an object that allows the scheduler to control the parallel computations.
 
-Note: here we use another new feature of OxCaml, [unboxed types](https://oxcaml.org/documentation/unboxed-types/01-intro/). `fork_join2` returns an unboxed tuple, so we pattern match an unboxed tuple with `let #(x, y) = ...`, so that the labels `x` and `y` now refer to the boxed values that we can use to contruct the return value.
+Note: here we use another new feature of OxCaml, [unboxed types](https://oxcaml.org/documentation/unboxed-types/01-intro/). `fork_join2` returns an unboxed tuple, so we pattern match an unboxed tuple with `let #(x, y) = ...`, so that the labels `x` and `y` now refer to the boxed values that we can use to construct the return value.
 
 ```ocaml
 let add4 (par : Parallel.t) a b c d =
@@ -199,7 +199,7 @@ Recall that *modes* are a set of annotations that constrain how a value may be u
 
 We've written two correct parallel programs and haven't used any portability or contention annotations. Fortunately, so far, the compiler was able to infer such annotations on its own and prove the correctness of those programs. Let's discuss what these annotations are and then look at cases when the compiler is unable to infer annotations for correct programs, and we need to add annotations manually.
 
-Some of the concepts related to contention and portability are somewhat circular, but we did our best to come up with a linear explanation. We recommend speeding through this section on the first read to get a general feel and then re-reading it more thoughtfully for the second time.
+Contention and portability concepts are somewhat circular, but we did our best to come up with a linear explanation. We recommend speeding through this section on the first read to get a general feel and then re-reading it more thoughtfully for the second time.
 
 #### Anatomy of a value
 A tiny OCaml terminology refresher. `x`, `r`, `f`, and `tuple` are all values.
@@ -247,7 +247,11 @@ let get_plus_one_cont (x @ contended) = x + 1
 let get_plus_one_uncont (x @ uncontended) = x + 1
 ```
 
-Now we'd like to write a similar function for a reference, a mutable value. `get_plus_one_ref_cont` won't compile, `r` must be uncontended even for read access, since it's mutable, but we explicitly claim that the parameter is contended, so the compiler infers a contradiction and rejects the program. `get_plus_one_ref_uncont r_cont` won't compile either, because now the function definition is correct, but our use of the function isn't: we are passing a contended argument to a function requiring an uncontended one.
+Now we'd like to write a similar function for a reference, a mutable value.
+
+Below, the `get_plus_one_ref_cont` function won't compile because `r` must be uncontended even for read access, since it's mutable. But we explicitly claim that the parameter is contended, so the compiler infers a contradiction and rejects the program.
+
+The `get_plus_one_ref_uncont r_cont` function call won't compile, either. Even though the function itself is correct, our use of the function isn't: we are passing a contended argument to a function requiring an uncontended one.
 ```ocaml
 let r_cont @ contended = ref 0
 let r_uncont @ uncontended = ref 0
@@ -301,7 +305,7 @@ calc_price_properties1 stock
 calc_price_properties2 stock 
 ```
 
-We'd like to reiterate that if we have a mutable state in a value, we cannot pretend that it is immutable, slap `@ contended` on it, and expect to be able to read the value from multiple domains. If we want to use a mutable state at all, it must be uncontended and accessed from a single domain. The `@ contended` annotation allows us to verifiably ignore the mutable value, say, when it's part of a record with some immutable fields we'd like to read from multiple domains.
+We'd like to reiterate that if we have a mutable state in a value, we cannot pretend that it is immutable, slap `@ contended` on it, and expect to be able to read that state from multiple domains. If we want to use a mutable state at all, it must be uncontended and accessed from a single domain. The `@ contended` annotation allows us to verifiably ignore the mutable state, say, when it's part of a record with some immutable fields we'd like to read from multiple domains.
 
 ```ocaml
 (*  Does not compile *)
@@ -388,7 +392,7 @@ let x = 42
 TODO
 
 ### Portability and contention in the fork-join model
-Let's take a closer look at the `parallel` library which provides us with `fork_join*` family of functions.
+Let's take a closer look at the `parallel` library which provides us with the `fork_join*` family of functions.
 
 ```ocaml
 let run (par : Parallel.t) =
@@ -493,6 +497,7 @@ We'd like to calculate properties of a stock (is a penny stock, is a five-digit 
 
 Motivation: you need to know the properties of a stock before you can safely work with it. Calculating properties is independent of each other and also takes a long time, so you parallelize the computation by instructions (same data, different instructions).
 
+(Syntax refresher: `Stock.price` refers to the function, not the field.)
 ```ocaml
 (*  Compiles *)
 module Stock = struct
@@ -514,8 +519,8 @@ let calc_stock_properties (par : Parallel.t) stock =
   is_penny, is_five_digit
 ;;
 
-let stock1 = Stock.create ~price:0.07
-let run par = calc_stock_properties par stock1 (* result: true false *)
+let stock = Stock.create ~price:0.07
+let run par = calc_stock_properties par stock (* result: true false *)
 ```
 
 Now let's extract the `Stock` record into a separate module.
@@ -540,7 +545,7 @@ Now this example does not compile. The compiler can now only see the Stock's sig
 
 Compiler output:
 
-```ocaml 
+``` 
 XX |       (fun _par -> is_five_digit_stock stock)
                         ^^^^^^^^^^^^^^^^^^^
 Error: The value is_five_digit_stock is nonportable
@@ -550,7 +555,21 @@ Error: The value is_five_digit_stock is nonportable
        because it is used inside a function which is expected to be portable.
 ```
 
-You can only pass a portable function to `fork_join2`'s second fork branch, so the compiler expects `is_five_digit_stock` to be portable. By default, though, all functions are nonportable (the least number of guarantees), so the compiler tries to check if it can prove that `is_five_digit_stock` is portable. Portable functions must in turn use portable functions only. `is_five_digit_stock` uses the `Stock.price` getter. However, the compiler doesn't have access to the `Stock.price` implementation after we moved it to `stock.mli`, so it can't check if its implementation adheres to portability rules, so it must pessimize and conclude that `Stock.price` is nonportable. Indeed, `Stock.price` might be calling some nonportable functions internally or break the portability requirements itself by accessing uncontended data (e.g. writing to a global value).
+Relevant snippets:
+```ocaml
+let calc_stock_properties ... = 
+  ...
+  let is_five_digit_stock stock = Float.(Stock.price stock >= 10000.0) in
+  ...
+    Parallel.fork_join2
+  ...
+(*  lib/stock.mli *)
+val price : t -> float
+```
+
+You can only pass a portable function to `fork_join2`'s second fork branch, so the compiler expects `is_five_digit_stock` to be portable. By default, though, all functions are nonportable (the least number of guarantees), so the compiler tries to check if it can prove that `is_five_digit_stock` is portable.
+
+Portable functions must in turn use portable functions only. `is_five_digit_stock` uses the `Stock.price` getter. However, the compiler doesn't have access to the `Stock.price` implementation after we moved it to `stock.ml`, so it can't check if its implementation adheres to portability rules, so it must pessimize and conclude that `Stock.price` is nonportable. Indeed, `Stock.price` might be calling some nonportable functions internally or break the portability requirements itself by accessing uncontended data (e.g. writing to a global value).
 
 Fix: annotate `Stock.price` as `@@ portable`.
 
@@ -559,38 +578,67 @@ Fix: annotate `Stock.price` as `@@ portable`.
 type t
 
 val create : price:float -> t
-val price : t -> float @@ portable
+- val price : t -> float
++ val price : t -> float @@ portable
 ```
 
 Compiler output:
-```ocaml
+```
 XX |       (fun _par -> is_five_digit_stock stock)
                                             ^^^^^
 Error: This value is contended but is expected to be uncontended.
 ```
-(Syntax refresher: `Stock.price` refers to the function, not the field.)
 
-`is_five_digit_stock` and `Stock.price` are portable. But `Stock.price` is allowed to modify `stock` and remain portable since `stock` is a local value from its perspective. However, the function with a binded argument `let () = is_five_digit_stock stock` is using a value outside of its own definition, and passes it to the function `Stock.price` which takes its argument uncontended, since it could be modifying the argument, so the binded function cannot be inferred as portable. But `fork_join2` requires its second fork branch to be portable. Now it's the caller's responsibility to ensure that `stock` is contended and doesn't break the portability.
+Relevant snippets:
+```ocaml
+let calc_stock_properties ... stock = 
+  ...
+  let is_five_digit_stock stock = Float.(Stock.price stock >= 10000.0) in
+  ...
+    Parallel.fork_join2
+      par
+      (fun _par -> ...)
+      (fun _par -> is_five_digit_stock stock) <----- Error
+(*  lib/stock.mli *)
+val price : t -> float @@ portable
+```
 
-Fix: annotate t passed into the price getter as `t @ contended`. Now the `Stock.price` getter cannot modify the stock.
+This compiler error is a bit tricky because it skips a step of reasoning. The `fork_join2` requires its second fork branch to be portable. To be portable, all the values outside its own definition that it references must be contended. So in the line `(fun _par -> is_five_digit_stock stock)`, `stock` must be contended.
+
+On the other hand, `stock` is passed to `is_five_digit_stock` where in turn it is passed to `Stock.price`. All we know about `Stock.price` during type-checking is its signature. Judging from its signature, `val price : t -> float @@ portable`, it could be modifying `t`, the stock, so the compiler assumes the worst case and infers that `t` is uncontended. From that, the `stock` in `let is_five_digit_stock stock = ...` also becomes uncontended, and it clashes with the compiler's requirement on the call site.
+
+Fix: annotate `t` passed into the price getter as `t @ contended`. Now the `Stock.price` getter cannot modify the stock. (If it does, then the Stock module itself won't compile, since the implementation would be breaking the contract promised by the signature.)
 
 ```ocaml
 (*  lib/stock.mli *)
 type t
 
 val create : price:float -> t
-val price : t @ contended -> float @@ portable
+- val price : t -> float @@ portable
++ val price : t @ contended -> float @@ portable
 ```
 
 Compiler output:
 
-```ocaml
+```
 XX | let run par = calc_stock_properties par stock
-                                                  ^^^^^
+                                             ^^^^^
 Error: This value is nonportable but is expected to be portable.
 ```
 
-Since `run` is passed to the scheduler, it is required to be portable, and all the values outside of its own definition that it references must also be portable. However, `stock` is a record with unknown fields, and some of these fields might contain a nonportable function. If we allow `stock` to sneak in being nonportable, then `Stock.price` could call that hidden function and create a data race.
+Relevant snippets:
+```ocaml
+let calc_stock_properties par stock =
+  ...
+
+let stock = Stock.create ~price:0.07
+let run par = calc_stock_properties par stock <----- Error
+
+(*  lib/stock.mli *)
+val create : price:float -> t
+```
+
+Since `run` is passed to the scheduler, it is required to be portable, and all the values outside its own definition that it references must also be portable. However, `stock` is a record with unknown fields, and some of these fields might contain a nonportable function. If we allow `stock` to sneak in being nonportable, then `Stock.price` could call that hidden function and create a data race.
 
 Fix: annotate the value returned from `Stock.create` as `@ portable`.
 ```ocaml
