@@ -17,9 +17,12 @@
 
 (package
  (name par-samples)
+ (allow_empty)
  (synopsis "A short synopsis")
  (description "A longer description")
- (depends ocaml)
+ (depends
+ ocaml
+ (ocamlformat (= 0.26.2+ox)))
  (tags
   ("add topics" "to describe" your project)))
 
