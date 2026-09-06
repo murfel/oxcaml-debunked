@@ -22,7 +22,7 @@ If you don't want to spell out the whole type, you can annotate a function param
 
 So when you invoke this function on a particular argument p, it will be passed in that specified mode. The compiler will check that the argument can be passed in the required mode, and that the function foo itself only does things to p which are permitted by its mode.
 
-As I mentioned before, there are several mode axes. Each axes contains multiple mode constants. For example, the contention mode axis has contended and uncontended mode constants. Similarly, portability axis has portable and nonportable. We will use the word mode to refer to either the axis, or the specific mode constants, for example, "the value is in uncontended mode" refers to a specific mode constant.      Now, let's analyse where data races happen and see how we can restrict them with modes.
+As I mentioned before, there are several mode axes. Each axis contains multiple mode constants. For example, the contention mode axis has contended and uncontended mode constants. Similarly, portability axis has portable and nonportable. We will use the word mode to refer to either the axis, or the specific mode constants, for example, "the value is in uncontended mode" refers to a specific mode constant.      Now, let's analyse where data races happen and see how we can restrict them with modes.
 
 ---
 
@@ -37,8 +37,6 @@ mutable data not protected by a synchronisation primitive. And for functions, a 
 a function which captures some mutable non-protected data, it can modify this data in parallel with another domain and cause a data race. Similarly, if there's
 
 A function capturing a function which in turn captures and modifies non-protected data, that can also lead to a data race.
-
-Now, value in OCaml refers to any term, that can contain any fields, or accept any number of parameters. OCaml naturally doesn't make a sharp distinction between data and functions. We will say 'data' to refer both to a value which only contains data, no functions; and to refer to those parts of value which are function. Similarly with the functions, it's either a function, a value containing functions only, or those parts of a value which contain functions.     So with contention and portability modes we will formalise when it is safe to access data and function.
 
 ---
 

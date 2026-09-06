@@ -64,18 +64,6 @@ let p = (5, ref 42)
 foo p
 ```
 
-{pause}
-
-#### Terminology
-Each **mode axis** contains several **mode constants**
-
-- The `contention` mode axis has `@ contended` and `@ uncontended` mode constants
-- The `portability` mode axis has `@ portable` and `@ nonportable` mode constants
-
-We use **mode** to refer to either **mode axis** or **mode constants**
-* **mode axis**: "which **modes** should I learn for multidomain programs?"
-* **mode constant**: "the value is in the uncontended **mode**"
-
 ---
 
 {pause up}
@@ -107,19 +95,6 @@ Where a data race occurs
 * functions capturing _function capturing mutable non-protected data_
 
 * etc.
-
-{pause}
-
-#### Terminology
-- value
-  - any term in OCaml
-- data
-  - a value which only contains data, no functions
-  - those parts of a value which are data
-- a function
-  - a value which is a function
-  - a value which only contains functions (a list of functions)
-  - those part of a value which are functions
 
 ---
 
