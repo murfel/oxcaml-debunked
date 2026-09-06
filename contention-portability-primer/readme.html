@@ -2128,7 +2128,7 @@ foo p
 (* =&amp;gt; both int ref are contended *)
 &lt;/code&gt;&lt;/pre&gt;
 &lt;div pause&gt;&lt;/div&gt;
-&lt;p&gt;&lt;span&gt;To contruct a value &lt;/span&gt;&lt;code&gt;@ mode&lt;/code&gt;&lt;span&gt;, all its parts must be &lt;/span&gt;&lt;code&gt;@ mode&lt;/code&gt;&lt;span&gt; (or compatible with &lt;/span&gt;&lt;code&gt;@ mode&lt;/code&gt;&lt;span&gt;)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span&gt;To construct a value &lt;/span&gt;&lt;code&gt;@ mode&lt;/code&gt;&lt;span&gt;, all its parts must be &lt;/span&gt;&lt;code&gt;@ mode&lt;/code&gt;&lt;span&gt; (or compatible with &lt;/span&gt;&lt;code&gt;@ mode&lt;/code&gt;&lt;span&gt;)&lt;/span&gt;&lt;/p&gt;
 &lt;div pause&gt;&lt;/div&gt;
 &lt;pre&gt;&lt;code class=&quot;language-ocaml&quot;&gt;val modify : int ref * int ref @ uncontended -&amp;gt; unit
 
@@ -2137,7 +2137,7 @@ let bar (r1 @ uncontended) (r2 @ contended) =
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div&gt;
-&lt;h2 id=&quot;submodding&quot; up-at-unpause pause&gt;&lt;a class=&quot;anchor&quot; aria-hidden=&quot;true&quot; href=&quot;#submodding&quot;&gt;&lt;/a&gt;&lt;span&gt;Submodding&lt;/span&gt;&lt;/h2&gt;
+&lt;h2 id=&quot;submoding&quot; up-at-unpause pause&gt;&lt;a class=&quot;anchor&quot; aria-hidden=&quot;true&quot; href=&quot;#submoding&quot;&gt;&lt;/a&gt;&lt;span&gt;Submoding&lt;/span&gt;&lt;/h2&gt;
 &lt;div pause&gt;&lt;/div&gt;
 &lt;p&gt;\(\le\)&lt;span&gt; means &amp;quot;can be used in place of&amp;quot;&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;@ uncontended&lt;/code&gt;&lt;span&gt; &lt;/span&gt;\(\le\)&lt;span&gt; &lt;/span&gt;&lt;code&gt;@ contended&lt;/code&gt;&lt;/p&gt;
@@ -2192,7 +2192,7 @@ let incr2_list = [incr2; incr2; incr2]  (* @ nonportable value *)
 &lt;p&gt;&lt;strong&gt;&lt;span&gt;Captured&lt;/span&gt;&lt;/strong&gt;&lt;span&gt; values, not parameters, make a function &lt;/span&gt;&lt;code&gt;@ nonportable&lt;/code&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div&gt;
-&lt;h2 id=&quot;submodding-1&quot; up-at-unpause pause&gt;&lt;a class=&quot;anchor&quot; aria-hidden=&quot;true&quot; href=&quot;#submodding-1&quot;&gt;&lt;/a&gt;&lt;span&gt;Submodding&lt;/span&gt;&lt;/h2&gt;
+&lt;h2 id=&quot;submoding-1&quot; up-at-unpause pause&gt;&lt;a class=&quot;anchor&quot; aria-hidden=&quot;true&quot; href=&quot;#submoding-1&quot;&gt;&lt;/a&gt;&lt;span&gt;Submoding&lt;/span&gt;&lt;/h2&gt;
 &lt;div pause&gt;&lt;/div&gt;
 &lt;p&gt;&lt;code&gt;@ portable&lt;/code&gt;&lt;span&gt; &lt;/span&gt;\(\le\)&lt;span&gt; &lt;/span&gt;&lt;code&gt;@ nonportable&lt;/code&gt;&lt;/p&gt;
 &lt;div pause&gt;&lt;/div&gt;
@@ -2204,7 +2204,7 @@ let incr2_list = [incr2; incr2; incr2]  (* @ nonportable value *)
 &lt;div pause&gt;&lt;/div&gt;
 &lt;p&gt;&lt;span&gt;A &lt;/span&gt;&lt;code&gt;@ portable&lt;/code&gt;&lt;span&gt; function can be used in place of &lt;/span&gt;&lt;code&gt;@ nonportable&lt;/code&gt;&lt;span&gt;,&lt;/span&gt;&lt;/p&gt;
 &lt;div pause&gt;&lt;/div&gt;
-&lt;p&gt;&lt;span&gt;since parts of a value accessible in the &lt;/span&gt;&lt;code&gt;@ contended&lt;/code&gt;&lt;span&gt; mode is a subset of parts of a value accesssible in the &lt;/span&gt;&lt;code&gt;@ uncontended&lt;/code&gt;&lt;span&gt; mode&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span&gt;since parts of a value accessible in the &lt;/span&gt;&lt;code&gt;@ contended&lt;/code&gt;&lt;span&gt; mode is a subset of parts of a value accessible in the &lt;/span&gt;&lt;code&gt;@ uncontended&lt;/code&gt;&lt;span&gt; mode&lt;/span&gt;&lt;/p&gt;
 &lt;div pause&gt;&lt;/div&gt;
 &lt;pre&gt;&lt;code class=&quot;language-ocaml&quot;&gt;let triple = (5, ref 42, (Atomic.make 100))
 (* in @ contended you can access 5 and Atomic 100 *)
@@ -2224,7 +2224,7 @@ let incr2_list = [incr2; incr2; incr2]  (* @ nonportable value *)
 &lt;div pause&gt;&lt;/div&gt;
 &lt;p&gt;&lt;span&gt;If a function can run on multiple domains (and not cause a data race), it can also run on a single domain (and not cause a data race).&lt;/span&gt;&lt;/p&gt;
 &lt;div pause&gt;&lt;/div&gt;
-&lt;p&gt;&lt;code&gt;@ nonportable&lt;/code&gt;&lt;span&gt; guarantees that a function will only be inkoved on one domain&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;@ nonportable&lt;/code&gt;&lt;span&gt; guarantees that a function will only be invoked on one domain&lt;/span&gt;&lt;/p&gt;
 &lt;div pause&gt;&lt;/div&gt;
 &lt;pre&gt;&lt;code class=&quot;language-ocaml&quot;&gt;val create : (unit -&amp;gt; 'a) @ nonportable -&amp;gt; 'a list
 let create (f @ nonportable) = [f (); f (); f ()]
@@ -2292,7 +2292,7 @@ let result = Domain.join d
 &lt;div pause&gt;&lt;/div&gt;
 &lt;p&gt;&lt;strong&gt;&lt;span&gt;Functions&lt;/span&gt;&lt;/strong&gt;&lt;span&gt;: &lt;/span&gt;&lt;code&gt;@ portable&lt;/code&gt;&lt;span&gt; &lt;/span&gt;\(\le\)&lt;span&gt; &lt;/span&gt;&lt;code&gt;@ nonportable&lt;/code&gt;&lt;span&gt; (portability axis)&lt;/span&gt;&lt;/p&gt;
 &lt;div pause&gt;&lt;/div&gt;
-&lt;p&gt;&lt;span&gt;Submodding: &lt;/span&gt;\(\le\)&lt;span&gt; means &amp;quot;can be used in place of&amp;quot;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span&gt;Submoding: &lt;/span&gt;\(\le\)&lt;span&gt; means &amp;quot;can be used in place of&amp;quot;&lt;/span&gt;&lt;/p&gt;
 &lt;div pause&gt;&lt;/div&gt;
 &lt;p&gt;&lt;span&gt;Deepness&lt;/span&gt;&lt;/p&gt;
 &lt;div pause&gt;&lt;/div&gt;

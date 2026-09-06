@@ -4,11 +4,11 @@ Domain here simply means thread, and that means multiple domains running simulta
 
 Now multi-threading is notoriously hard, and one of the reasons for this is data races.
 
-The recipe for disaster is you need at least two domains accessing the same memory location without any synchronisation, and one of those accesses is a write.
+The recipe for disaster is you need at least two domains accessing the same memory location without any synchronization, and one of those accesses is a write.
 
 OxCaml introduces an extension to OCaml, which introduces contention and portability modes, which ensure that there's no data races in compile time, so before your program is ever executed.
 
-There's three building blocks for writing multi-domain code in OxCaml: contention portability modes; synchronisation primitives; and the framework for spawning and managing your multi domain tasks, the fork-join pool. In this video, we'll cover the first part, contention and portability modes.
+There's three building blocks for writing multi-domain code in OxCaml: contention portability modes; synchronization primitives; and the framework for spawning and managing your multi domain tasks, the fork-join pool. In this video, we'll cover the first part, contention and portability modes.
 
 ---
 
@@ -22,7 +22,7 @@ If you don't want to spell out the whole type, you can annotate a function param
 
 So when you invoke this function on a particular argument p, it will be passed in that specified mode. The compiler will check that the argument can be passed in the required mode, and that the function foo itself only does things to p which are permitted by its mode.
 
-As I mentioned before, there are several mode axes. Each axis contains multiple mode constants. For example, the contention mode axis has contended and uncontended mode constants. Similarly, portability axis has portable and nonportable. We will use the word mode to refer to either the axis, or the specific mode constants, for example, "the value is in uncontended mode" refers to a specific mode constant.      Now, let's analyse where data races happen and see how we can restrict them with modes.
+As I mentioned before, there are several mode axes. Each axis contains multiple mode constants. For example, the contention mode axis has contended and uncontended mode constants. Similarly, portability axis has portable and nonportable. We will use the word mode to refer to either the axis, or the specific mode constants, for example, "the value is in uncontended mode" refers to a specific mode constant.      Now, let's analyze where data races happen and see how we can restrict them with modes.
 
 ---
 
@@ -32,7 +32,7 @@ It could simply be a pair of a reference to an int and an increment function, or
 
 When thinking where a data race can occur, for data, we would like to prevent multiple domains to access any parts which are 
 
-mutable data not protected by a synchronisation primitive. And for functions, a pure function without side-effects cannot cause a data race, even if run in parallel. Yet if there's 
+mutable data not protected by a synchronization primitive. And for functions, a pure function without side effects cannot cause a data race, even if run in parallel. Yet if there's
 
 a function which captures some mutable non-protected data, it can modify this data in parallel with another domain and cause a data race. Similarly, if there's
 
@@ -44,15 +44,15 @@ Now contention mode relates to the data part of a value and decides if you can r
 
 into mutable and immutable parts.
 
-So first of all, immutable data crosses contention. That means that this mode doesn't matter, and immutable data can be in any mode and it's always safe to read it.     Going further in dissection, we are going to split all **mutable** data parts of a value into parts which are 
+So first of all, immutable data crosses contention. That means that this mode doesn't matter, and immutable data can be in any mode, and it's always safe to read it.     Going further in dissection, we are going to split all **mutable** data parts of a value into parts which are
 
-protected by a synchronisation primitive, and parts which are not.
+protected by a synchronization primitive, and parts which are not.
 
 The contended mode says that it's safe to access this value from multiple domains.
-If a value comes in the contended mode, we get full read and write access to all those parts of a value that are mutable data protected by a synchronisation primitive, such as an atomic or a mutex. For any parts which are not that, we won't be able to access them, and we can treat them as temporary hidden. And the compiler will check us on this.
+If a value comes in the contended mode, we get full read and write access to all those parts of a value that are mutable data protected by a synchronization primitive, such as an atomic or a mutex. For any parts which are not that, we won't be able to access them, and we can treat them as temporary hidden. And the compiler will check us on this.
 
 The uncontended mode says that it's safe to access this data from a single domain.
-If a value comes in the uncontended mode, we get access to *any* parts of this value. Specifically, to any mutable data which is either non-synchronised, so for example a plain reference to an int, or synchronised, think the same reference to an int but under an atomic or a mutex.
+If a value comes in the uncontended mode, we get access to *any* parts of this value. Specifically, to any mutable data which is either non-synchronized, so for example a plain reference to an int, or synchronized, think the same reference to an int but under an atomic or a mutex.
 
 And just to remind you, in both modes, contended and uncontended, we always have read access to any immutable parts of data. Let's see some examples.
 
@@ -60,9 +60,9 @@ And just to remind you, in both modes, contended and uncontended, we always have
 
 Let's go back to the foo function which takes a pair of int and a reference to an int in a certain mode. We are interested in what we can do with the parameter in this function and how many domains can access this parameter.
 
-So here we have a pair which is taken in the contended mode. It's an immutable int and a reference to an int without any synchronisation. What can we do with this parameter inside the foo function implementation?
+So here we have a pair which is taken in the contended mode. It's an immutable int and a reference to an int without any synchronization. What can we do with this parameter inside the foo function implementation?
 
-The first field, the number 5, is immutable, hence we can read from it freely. The second field is plain mutable data, without any synchronisation. We cannot access it in any way because accessing it will violate the promise of contended. And the compiler will check that we don't read or write any non-synchronised mutable data in the contended mode.
+The first field, the number 5, is immutable, hence we can read from it freely. The second field is plain mutable data, without any synchronization. We cannot access it in any way because accessing it will violate the promise of contended. And the compiler will check that we don't read or write any non-synchronized mutable data in the contended mode.
 
 Inside the foo function, it can spawn multiple domains and any domain can access p, but it will only see the immutable part of this value.
 
@@ -100,7 +100,7 @@ The "less than or equals" sign means "can be used in place of". Uncontended can 
 
 Uncontended can be passed into a function expecting contented.
 
-Why? The function accepting @ contended is more restricted. It is only allowed to access parts which are synchronised mutable data. But the initial uncontended value allowed to access any of its parts, including the synchronised mutable data. If anything, we can access *less* of the value's fields than before, so we cannot do anything bad to the data.
+Why? The function accepting @ contended is more restricted. It is only allowed to access parts which are synchronized mutable data. But the initial uncontended value allowed to access any of its parts, including the synchronized mutable data. If anything, we can access *less* of the value's fields than before, so we cannot do anything bad to the data.
 
 ---
 
@@ -110,7 +110,7 @@ We worry about functions because they can capture and modify mutable data, and t
 
 They can also capture references to other functions which in turn modify mutable data. This way, the initial function can call a captured function, and cause a data race indirectly through that captured function's actions. The portability mode axis comes with two modes, portable and nonportable.
 
-The portable mode means that it's safe to invoke this function from multiple domains. Such functions would be a function that capture no data, captures immutable data, capture mutables data but never accesses it, or captures synchronised mutable data.
+The portable mode means that it's safe to invoke this function from multiple domains. Such functions would be a function that capture no data, captures immutable data, capture mutable data but never accesses it, or captures synchronized mutable data.
 
 But also, a portable function can only capture those **function** which are also safe to invoke from multiple domains, so that it can't cause a data race indirectly.
 
@@ -144,13 +144,13 @@ because parts of a value accessible in the contended mode is a subset of parts o
 
 Here's a triple of various data as an example. In the contended mode, you can access the immutable 5 and the atomic 100. In the uncontended mode, you can access all parts of a value, there's no restrictions.
 
-To generalise, a portable function can only modify the synchronised data, and a nonportable function can modify any data.
+To generalize, a portable function can only modify the synchronized data, and a nonportable function can modify any data.
 
-Now, we saw that submodding makes sense from the perspective of what a function can *do*.
+Now, we saw that submoding makes sense from the perspective of what a function can *do*.
 
 ---
 
-Let's make sure that submodding still makes sense when we think about how a function can be used.
+Let's make sure that submoding still makes sense when we think about how a function can be used.
 
 The portable mode allows to run a function on multiple domains. So whoever accepts a portable function as a parameter is free to invoke this function in parallel on multiple domains.
 
@@ -158,7 +158,7 @@ If a function can run on multiple domains safely, it can run on a single domain 
 
 Well, if a function accepts a nonportable parameter, it can only invoke it on the same domain, so hence you can pass a portable when a nonportable argument is expected.
 
-Let's see a quick example. Here the create function accepts a function in a nonportable mode and it invokes this function three times to create a list of three values. We have a nonportable and a portable versions of the same next function that we intend to pass into create. They both capture a counter, increment it and return its old value on each invocation. The only difference is the portable next uses a domain-safe atomic counter. It is clear that we can safely pass the domain-safe next_portable into create, even though it expects a nonportable function.
+Let's see a quick example. Here the create function accepts a function in a nonportable mode, and it invokes this function three times to create a list of three values. We have a nonportable and a portable versions of the same next function that we intend to pass into create. They both capture a counter, increment it and return its old value on each invocation. The only difference is the portable next uses a domain-safe atomic counter. It is clear that we can safely pass the domain-safe next_portable into create, even though it expects a nonportable function.
 
 ---
 
@@ -168,7 +168,7 @@ To spawn a domain, you need to pass a function to be executed on this domain. To
 
 We should require that this function will be @ portable.
 
-So all values it captures must be contended and portable, because otherwise it will make it nonportable. So any data it has access to is synchronised, and any functions it has access to are data-race safe themselves.
+So all values it captures must be contended and portable, because otherwise it will make it nonportable. So any data it has access to is synchronized, and any functions it has access to are data-race safe themselves.
 
 Inside, this function can define and invoke nonportable functions capturing its own local variables. So it can define its own state and call nonportable functions on it. It can modify its own state, no problems here.
 

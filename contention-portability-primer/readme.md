@@ -204,10 +204,10 @@ foo p
 
 {pause}
 
-| | domain 1 | domain 2 |
-|---|:---:|:---:|
-| **read**  | ✅ | ❌ |
-| **write** | ✅ | ❌ |
+|           | domain 1 | domain 2 |
+|-----------|:--------:|:--------:|
+| **read**  |    ✅    |    ❌    |
+| **write** |    ✅    |    ❌    |
 
 ---
 
@@ -241,7 +241,7 @@ val foo : int ref * int ref @ contended -> unit
 
 {pause}
 
-To contruct a value `@ mode`, all its parts must be `@ mode` (or compatible with `@ mode`)
+To construct a value `@ mode`, all its parts must be `@ mode` (or compatible with `@ mode`)
 
 {pause}
 
@@ -255,7 +255,7 @@ let bar (r1 @ uncontended) (r2 @ contended) =
 ---
 
 {pause up}
-## Submodding
+## Submoding
 
 {pause}
 
@@ -355,7 +355,7 @@ let incr2_list = [incr2; incr2; incr2]  (* @ nonportable value *)
 ---
 
 {pause up}
-## Submodding
+## Submoding
 
 {pause}
 
@@ -373,7 +373,7 @@ A `@ portable` function can be used in place of `@ nonportable`,
 
 {pause}
 
-since parts of a value accessible in the `@ contended` mode is a subset of parts of a value accesssible in the `@ uncontended` mode
+since parts of a value accessible in the `@ contended` mode is a subset of parts of a value accessible in the `@ uncontended` mode
 
 {pause}
 
@@ -412,7 +412,7 @@ If a function can run on multiple domains (and not cause a data race), it can al
 
 {pause}
 
-`@ nonportable` guarantees that a function will only be inkoved on one domain
+`@ nonportable` guarantees that a function will only be invoked on one domain
 
 {pause}
 
@@ -528,7 +528,7 @@ A value contains parts which are **data** and which are **functions**
 
 {pause}
 
-Submodding: $\le$ means "can be used in place of"
+Submoding: $\le$ means "can be used in place of"
 
 {pause}
 
