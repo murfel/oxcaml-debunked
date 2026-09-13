@@ -22,7 +22,43 @@ If you don't want to spell out the whole type, you can annotate a function param
 
 So when you invoke this function on a particular argument p, it will be passed in that specified mode. The compiler will check that the argument can be passed in the required mode, and that the function foo itself only does things to p which are permitted by its mode.
 
-As I mentioned before, there are several mode axes. Each axis contains multiple mode constants. For example, the contention mode axis has contended and uncontended mode constants. Similarly, portability axis has portable and nonportable. We will use the word mode to refer to either the axis, or the specific mode constants, for example, "the value is in uncontended mode" refers to a specific mode constant.      Now, let's analyze where data races happen and see how we can restrict them with modes.
+---
+
+To understand how to prevent data races in compile time, we first need to see how multi-domain programs are structured. In particular, we will analyze the memory reachable from different domains. We will do this somewhat informally, to give you the intuition.
+
+The interface for spawning a domain dictates that you should pass a single nullary function that you wish to run on a newly spawn domain, that is, a function without any parameters.
+
+Such function is sometimes called a thunk, a delayed computation.
+
+Here's the type signature and a usage example for the Domain dot spawn function. It accepts a nullary function, in this case, the 5 + 8 delayed computation, that will be run on a newly spawned domain. This code will be run in parallel, or at the same time, with the original domain, the 40 + 2 computation. Sometimes you'd like to pass some parameters to the function executing on the newly created domain
+
+and in such case your nullary function must capture these parameters instead. That's the only way to "pass" the parameters.
+
+So here in the example we have the nullary function capturing three values, `f`, `x`, and `y`, from its parent domain's scope, and then applying the captured function f to the captured data x and y.
+
+Now let's analyze where a data race can occur.
+
+For simplicity, we will assume that the nullary function doesn't spawn any inner domains.
+
+If the nullary function doesn't capture any values, then it cannot access any memory from outside the domain that it runs on. Specifically, it only has access to the objects it allocates itself. Similarly, no other domain can access this domains memory because no other domain knows about any of the objects that this domain allocates. There's simply no such codepath that can allow other domains to take a peek at this domain's memory locations.
+
+So in this case there's no shared memory, hence data races are not possible.
+
+Now, if the nullary function captures some values, what could these values be? They can be data, function, and references to other memory locations. So with each captured value, we get a whole reachability graph of values.
+
+Both domains will have non-restricted access to this whole reachability graph in runtime.
+
+So we somehow would like to ensure in compile time that all the graph is safe for multi-domain access. So basically that all the data that is accessible by this graph comes either in atomics or synchronization primitives.
+
+We should also note that the reachability graph is updated dynamically, in runtime. So depending on some if condition, so memory cells may or may not be included.
+
+So we are going to divide all the values into safe and unsafe, in compile time, and only allow safe values in the reachability graph. And that's where modes come into play.
+
+---
+
+To visualize the reachability graph, here on the diagram Domain 2 captures a value on Domain 1, and that value in turn has references to two memory cells on Domain 1, one of which also references an array on Domain 2, and so on. Note that initially it's only Domain 2 that has access into Domain 1 memory by capture a memory cell from it. As the program execution progresses, Domain 2 may choose to share a reference to its own memory, and that's how Domain 1 can gain access to Domain 2 memory.
+
+Each of these cells contains any combination of data, function, and further references.
 
 ---
 
@@ -32,6 +68,7 @@ It could simply be a pair of a reference to an int and an increment function, or
 
 When thinking where a data race can occur, for data, we would like to prevent multiple domains to access any parts which are 
 
+TODO: that's completely untrue!
 mutable data not protected by a synchronization primitive. And for functions, a pure function without side effects cannot cause a data race, even if run in parallel. Yet if there's
 
 a function which captures some mutable non-protected data, it can modify this data in parallel with another domain and cause a data race. Similarly, if there's

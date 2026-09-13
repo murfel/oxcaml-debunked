@@ -68,6 +68,101 @@ foo p
 
 {pause up}
 
+### Domain spawning mechanism
+
+{pause}
+
+To spawn a domain, you pass a function without any parameters (a _nullary_ function)
+
+{pause}
+
+(sometimes also called a _thunk_)
+
+{pause}
+
+```ocaml
+val spawn : (unit -> 'a) -> 'a t
+```
+
+```ocaml
+let d = Domain.spawn (fun () -> 
+  5 + 8 (* domain 2's computation *)
+) in
+40 + 2 in (* domain 1's computations continue here *)
+let result = Domain.join d
+```
+
+{pause}
+
+If your function needs any parameters, it must **capture** them
+
+{pause}
+
+{#domain-example}
+```ocaml
+let x = 5 in
+let y = 8 in
+let f x y = x + y in
+let d = Domain.spawn (fun () ->  (* This nullary function *)
+  f x y                          (* captures f, x, y *)
+) in
+let result = Domain.join d
+```
+
+{pause up=domain-example}
+{#capture-analysis}
+Where can a data race occur?
+
+{pause}
+
+_Assume for simplicity the nullary function doesn't spawn any inner domains_
+
+{pause}
+
+**If there is no captured values**
+- Memory allocated outside of the nullary function is unreachable
+- Memory allocated inside the nullary function is only reachable by its domain
+
+{pause}
+
+$\implies$ no shared memory $\implies$ data races not possible
+
+{pause}
+
+**If some values are captured**
+- Captured **data**
+- Captured **functions**
+- Captured **references** to other memory locations which contain other data, functions, references (its transitive closure is a **reachability graph**)
+
+{pause up=capture-analysis}
+
+$\implies$ both domains can access all of it freely in **runtime** (and cause a data race)
+
+{pause}
+
+$\implies$ all the reachability graph must be safe for multiple domain access, provably in **compile time**
+
+{pause}
+
+Yet the reachability graph is updated dynamically, in **runtime**.
+
+{pause}
+
+$\implies$ divide all values into 'safe' and 'unsafe' in compile time, only allow 'safe' values in the reachability graph (that's modes!)
+
+---
+
+{pause up}
+## Memory reachability graph
+<img src="interdomain_memory_graph.svg" width="1200">
+
+{pause}
+
+Each cell contains a combination of **data**, **functions**, **references**
+
+---
+
+{pause up}
 ### Anatomy of a value
 
 A value contains **data** and **functions**
@@ -77,8 +172,6 @@ A value contains **data** and **functions**
 ```ocaml
 let p = (ref 42, (fun x -> x + 1))
 ```
-
-{pause}
 
 Where a data race occurs
 
@@ -99,7 +192,6 @@ Where a data race occurs
 ---
 
 {pause up}
-
 ### Contention mode axis
 
 Relates to **data**, decides if you can read and write
