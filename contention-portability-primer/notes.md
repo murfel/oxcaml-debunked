@@ -1,0 +1,3 @@
+```
+slipshow compile readme.md
+```
