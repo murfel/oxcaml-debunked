@@ -33,7 +33,7 @@ let adjust_trading_speed (stock @ uncontended) =
 let run (par : Parallel.t) =
   let stock = Stock.create ~price:17.29 ~trading_speed:0.10 in
   let #((), _, _) =
-    Parallel.fork_join3
+    Parallel.Biased.fork_join3
       par
       (fun _par -> adjust_trading_speed stock)
       (fun _par -> calc_price_properties stock)

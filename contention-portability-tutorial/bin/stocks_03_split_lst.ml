@@ -2,11 +2,11 @@ open Core
 open Par_samples
 
 let count_penny_stocks_par (par : Parallel.t) prices threshold =
-  let left, right = List.split_n prices (List.length prices / 2) in
+  let #(left, right) = List.split_n prices (List.length prices / 2) in
   let is_penny_stock stock = Float.(Stock.price stock > threshold) in
   let count_penny_stocks lst = List.count lst ~f:is_penny_stock in
   let #(left_count, right_count) =
-    Parallel.fork_join2
+    Parallel.Biased.fork_join2
       par
       (fun _par -> count_penny_stocks left)
       (fun _par -> count_penny_stocks right)

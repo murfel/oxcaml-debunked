@@ -50,18 +50,20 @@ OxCaml's `parallel` library uses a fork-join model for multidomain execution. Un
 
 #### Example
 
-Here we pass two computations: `a + b` and `c + d` into `Parallel.fork_join2`, and once both of them finish, we sum their results and return. When we submit `test_add4` to the scheduler, it will assign domains to run these computations. These might be two different domains, or a single domain might run both computations.
+Here we pass two computations: `a + b` and `c + d` into `Parallel.Biased.fork_join2`, and once both of them finish, we sum their results and return. When we submit `test_add4` to the scheduler, it will assign domains to run these computations. These might be two different domains, or a single domain might run both computations.
 
 Unlike under asynchronous execution that you might be familiar with from the Async library, the current thread will not be executing any following instructions until both computations finish. In fact, the current thread will also participate in computing the submitted computations.
 
 We also pass `par: Parallel.t`, which is an object that allows the scheduler to control the parallel computations.
+
+Note: this tutorial uses `Parallel.Biased.fork_join*`, which runs its first computation on the calling domain. Since `parallel` `v0.18~preview.130.106+341`, the unbiased `Parallel.fork_join*` requires every computation to be `shareable`, so none of them may mutate captured state.
 
 Note: here we use another new feature of OxCaml, [unboxed types](https://oxcaml.org/documentation/unboxed-types/01-intro/). `fork_join2` returns an unboxed tuple, so we pattern match an unboxed tuple with `let #(x, y) = ...`, so that the labels `x` and `y` now refer to the boxed values that we can use to construct the return value.
 
 ```ocaml
 let add4 (par : Parallel.t) a b c d =
   let #(a_plus_b, c_plus_d) =
-    Parallel.fork_join2 par
+    Parallel.Biased.fork_join2 par
       (fun _par -> a + b)
       (fun _par -> c + d)
   in
@@ -76,11 +78,7 @@ let test_add4 par = add4 par 1 10 100 1000
 To run the code above, include `parallel` and `parallel.scheduler` libraries into your `dune` config, create a scheduler, and pass the parallel computation to it. We will omit the scheduler creation and result-printing code from snippets from now on.
 ```ocaml
 let run_one_test ~(f : Parallel.t @ local -> 'a) : 'a =
-  let module Scheduler = Parallel_scheduler in
-  let scheduler = Scheduler.create () in
-  let result = Scheduler.parallel scheduler ~f in
-  Scheduler.stop scheduler;
-  result
+  Parallel_scheduler.with_parallel f
 ;;
 
 let () =
@@ -89,7 +87,7 @@ let () =
 ;;
 ```
 #### Structure
-Note that we use `Parallel.fork_join2` to spawn two computations, but there exist `fork_join3`, `4` and `5`, or plain `fork_join` which accepts a list of computations to run in parallel.
+Note that we use `Parallel.Biased.fork_join2` to spawn two computations, but there exist `fork_join3`, `4` and `5`. (The unbiased `Parallel.fork_join` also accepts a list of computations to run in parallel.)
 
 Each computation passed to `fork_join*` can itself start inner parallel computations by calling `fork_join*` again. A fork-join group of computations finishes when the last computation in the group finishes.
 
@@ -102,7 +100,7 @@ Note that the blue horizontal lines do not necessarily mean that each computatio
 #### Domain-preservation property
 **Disclaimer**: this is my best-effort logical assumption on how fork-join works. I unfortunately haven't been able to fully comprehend the parallel library implementations yet in the short span of time devoted to this tutorial. To be fact-checked by more experienced people.
 
-OxCaml's **fork-join preserves the domain of execution for the first forked computation** passed to the `Parallel.fork_join*` function.
+OxCaml's **fork-join preserves the domain of execution for the first forked computation** passed to the `Parallel.Biased.fork_join*` function.
 
 This incredibly important property allows us to use mutable states between fork-join computations on the same *line*, since it is guaranteed to be executed on the same domain. We'll cover that later in more detail.
 
@@ -143,7 +141,7 @@ let count_profitable_days_par (par : Parallel.t) prices threshold =
       if Float.(price > threshold) then count := !count + 1)
   in
   let _ =
-    Parallel.fork_join2
+    Parallel.Biased.fork_join2
       par
       (fun _par -> count_profitable_days_inner left)
       (fun _par -> count_profitable_days_inner right)
@@ -173,7 +171,7 @@ With local counters, we can reuse the sequential version and rewrite the paralle
 let count_profitable_days_par (par : Parallel.t) prices threshold =
   let left, right = List.split_n prices (List.length prices / 2) in
   let #(left_count, right_count) =
-    Parallel.fork_join2
+    Parallel.Biased.fork_join2
       par
       (fun _par -> count_profitable_days left threshold)
       (fun _par -> count_profitable_days right threshold)
@@ -397,7 +395,7 @@ Let's take a closer look at the `parallel` library which provides us with the `f
 ```ocaml
 let run (par : Parallel.t) =
   let #(result1, result2) =
-    Parallel.fork_join2 par
+    Parallel.Biased.fork_join2 par
       (fun _par -> 1)
       (fun _par -> 42)
   in
@@ -405,11 +403,7 @@ let run (par : Parallel.t) =
 ;;
 
 let run_one_test ~(f : Parallel.t @ local -> 'a) : 'a =
-  let module Scheduler = Parallel_scheduler in
-  let scheduler = Scheduler.create () in
-  let result = Scheduler.parallel scheduler ~f in
-  Scheduler.stop scheduler;
-  result
+  Parallel_scheduler.with_parallel f
 ;;
 
 let () = run_one_test ~f:run
@@ -417,12 +411,21 @@ let () = run_one_test ~f:run
 
 This library creates and manages domains, so it must adhere to portability and contention rules itself. Let's check that they are necessary and sufficient.
 
-`Scheduler.parallel scheduler ~f` requires `f` to be `portable`. This seems fair, since it could run our code on any domain. However, it feels like we might not be able to express everything we want to. We agreed that we are not going to modify *shared* mutable state in this tutorial yet, but we still want to be able to modify mutable states, as long as they are not shared between domains.
+`Parallel_scheduler.with_parallel f` does not require `f` to be `portable`, only `once`:
+
+```ocaml
+val with_parallel
+  :  ?max_workers:int
+  -> (Parallel_kernel.t @ local -> 'a) @ once
+  -> 'a
+```
+
+So the computation we pass to the scheduler, the *root* computation, can use nonportable values, such as functions that modify mutable state. This is safe because the root computation is not sent off to some other domain; any work that may run elsewhere has to go through `fork_join*`, and that is where portability is checked.
+
+We agreed that we are not going to modify *shared* mutable state in this tutorial yet, but we still want to be able to modify mutable states, as long as they are not shared between domains.
 
 For example, a program where one domain modifies a global value `x`, and no other domains access `x` is a correct, data-race free program.
 ```ocaml
-(* Does not compile *)
-
 (* Global state, created before any domains were ever created in the program. *)
 let x = ref 0
 
@@ -433,13 +436,7 @@ let () = x := 42; !x
 let () = 1729
 ```
 
-TODO: is this not expressible in the fork-join model or OxCaml itself? I.e., in OxCaml, we cannot track global state access across modules? i.e., I want to motivate that this global access restriction is necessary. The next two paragraphs mix the blame between the fork-join model and OxCaml. Needs to be clarified whose restriction it is.
-
-Unfortunately, we cannot exactly express the program above with the fork-join library, since the function running on domain A is nonportable, but anything passed into `Scheduler.parallel` must be portable.
-
-However, with some gentle tweaks, you can adjust most, if not all, data-race free programs to type-check under OxCaml.
-
-Recall that `fork_join*` runs the first argument on the same domain that `fork_join*` was called on. This clever design allows us to modify state that was created within the `fork_join*` in the function passed to the first argument. And the `fork_join2` signature reflects this fact:
+Recall that `Biased.fork_join*` runs the first argument on the same domain that `fork_join*` was called on. This clever design allows us to modify state in the function passed to the first argument. And the `Biased.fork_join2` signature reflects this fact:
 
 ```ocaml
 val fork_join2
@@ -449,15 +446,43 @@ val fork_join2
   -> #('a * 'b)
 ```
 
-The first argument to any function within the `fork_join*` family could be nonportable.
+The first argument to any function within the `Biased.fork_join*` family could be nonportable.
 
-This helps us rewrite our example above to the following. Here `x := 42; !x` is nonportable, but `fork_join*` is ok with this.
+So we can express our example above directly: domain A becomes the first branch, domain B the second. Here `x := 42; !x` is nonportable, but both `with_parallel` and `Biased.fork_join2` are ok with this.
+```ocaml
+(* Compiles *)
+let x = ref 0
+
+let run (par : Parallel.t) =
+  let #(result1, result2) =
+    Parallel.Biased.fork_join2 par
+      (fun _par -> x := 42; !x)
+      (fun _par -> 1729)
+  in
+  result1, result2  (* result: (42, 1729) *)
+;;
+```
+
+Swapping the branches does not compile, since the second branch must be portable, and a portable function cannot modify `x`:
+```ocaml
+(* Does not compile *)
+let run (par : Parallel.t) =
+  let #(result1, result2) =
+    Parallel.Biased.fork_join2 par
+      (fun _par -> 1729)
+      (fun _par -> x := 42; !x)
+  in
+  result1, result2
+;;
+```
+
+The same works for a local `ref` created inside `run`:
 ```ocaml
 (* Compiles *)
 let run (par : Parallel.t) =
   let x = ref 0 in
   let #(result1, result2) =
-    Parallel.fork_join2 par
+    Parallel.Biased.fork_join2 par
       (fun _par -> x := 42; !x)
       (fun _par -> 1729)
   in
@@ -472,11 +497,11 @@ The rest of the arguments to `fork_join*` required to be portable, since they ca
 let run (par : Parallel.t) =
   let x = ref 0 in
   let #(result1, result2) =
-    Parallel.fork_join2 par
+    Parallel.Biased.fork_join2 par
       (fun _par -> x := 42; !x)
       (fun _par -> let y = ref 0 in 
                    let #(inner_r1, inner_r2) = 
-                     Parallel.fork_join2 par 
+                     Parallel.Biased.fork_join2 par 
                        (fun _par -> y := 17; !y) 
                        (fun _par -> 29)
                    in
@@ -488,7 +513,7 @@ let run (par : Parallel.t) =
 
 If the first branch of the inner fork-join calls `fork_join*` again, it can also pass a nonportable function, modifying `y`, to its first argument, thus stretching this value through two forks.
 
-The practical takeaway is that **all the functions used in `Scheduler.parallel` must be `portable`. The first argument to `fork_join*` can be nonportable,** as long as it remains portable from the `Scheduler.parallel`'s perspective.
+The practical takeaway is that **the root computation passed to `with_parallel` and the first argument to `Biased.fork_join*` can be nonportable. Every other argument to `Biased.fork_join*` must be `portable`.**
 
 ### Annotating example
 Let's discuss an example when we need to manually annotate portability and contention modes.
@@ -511,7 +536,7 @@ let calc_stock_properties (par : Parallel.t) stock =
   let is_penny_stock stock = Float.(Stock.price stock < 1.0) in
   let is_five_digit_stock stock = Float.(Stock.price stock >= 10000.0) in
   let #(is_penny, is_five_digit) =
-    Parallel.fork_join2
+    Parallel.Biased.fork_join2
       par
       (fun _par -> is_penny_stock stock)
       (fun _par -> is_five_digit_stock stock)
@@ -561,7 +586,7 @@ let calc_stock_properties ... =
   ...
   let is_five_digit_stock stock = Float.(Stock.price stock >= 10000.0) in
   ...
-    Parallel.fork_join2
+    Parallel.Biased.fork_join2
   ...
 (*  lib/stock.mli *)
 val price : t -> float
@@ -595,7 +620,7 @@ let calc_stock_properties ... stock =
   ...
   let is_five_digit_stock stock = Float.(Stock.price stock >= 10000.0) in
   ...
-    Parallel.fork_join2
+    Parallel.Biased.fork_join2
       par
       (fun _par -> ...)
       (fun _par -> is_five_digit_stock stock) <----- Error
@@ -638,7 +663,7 @@ let run par = calc_stock_properties par stock <----- Error
 val create : price:float -> t
 ```
 
-Since `run` is passed to the scheduler, it is required to be portable, and all the values outside its own definition that it references must also be portable. However, `stock` is a record with unknown fields, and some of these fields might contain a nonportable function. If we allow `stock` to sneak in being nonportable, then `Stock.price` could call that hidden function and create a data race.
+The second branch of `fork_join2`, `(fun _par -> is_five_digit_stock stock)`, is required to be portable, and all the values outside its own definition that it references must also be portable, including `stock`. So `calc_stock_properties` requires its `stock` argument to be portable. However, `stock` is a record with unknown fields, and some of these fields might contain a nonportable function. If we allow `stock` to sneak in being nonportable, then `Stock.price` could call that hidden function and create a data race.
 
 Fix: annotate the value returned from `Stock.create` as `@ portable`.
 ```ocaml

@@ -5,7 +5,7 @@
   average
   contention
   contended_mutable
-  ref_global_bad
+  ref_global_good
   ref_local_f_local_good
   ref_local_f_global_good
   ref_local_two_bad

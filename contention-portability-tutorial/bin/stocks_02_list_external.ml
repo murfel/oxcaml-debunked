@@ -29,7 +29,7 @@ let count_weird_stocks_par (par : Parallel.t) stocks =
   let is_five_digit_stock stock = Float.(Stock.price stock >= 10000.0) in
   let count_five_digit_stocks lst = List.count lst ~f:is_five_digit_stock in
   let #(penny, five_digit) =
-    Parallel.fork_join2
+    Parallel.Biased.fork_join2
       par
       (fun _par -> count_penny_stocks stocks)
       (fun _par -> count_five_digit_stocks stocks)

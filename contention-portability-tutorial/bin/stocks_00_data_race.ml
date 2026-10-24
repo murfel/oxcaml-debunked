@@ -34,12 +34,12 @@ let () =
 
 (* let count_profitable_days_par (par : Parallel.t) prices threshold = *)
 (*  let count = ref 0 in *)
-(*  let left, right = List.split_n prices (List.length prices / 2) in *)
+(*  let #(left, right) = List.split_n prices (List.length prices / 2) in *)
 (*  let count_profitable_days_inner lst = *)
 (*    List.iter lst ~f:(fun price -> if Float.(price > threshold) then count := !count + 1) *)
 (*  in *)
 (*  let _ = *)
-(*    Parallel.fork_join2 *)
+(*    Parallel.Biased.fork_join2 *)
 (*      par *)
 (*      (fun _par -> count_profitable_days_inner left) *)
 (*      (fun _par -> count_profitable_days_inner right) *)
@@ -52,9 +52,9 @@ let () =
 (*  Compiles *)
 
 let count_profitable_days_par (par : Parallel.t) prices threshold =
-  let left, right = List.split_n prices (List.length prices / 2) in
+  let #(left, right) = List.split_n prices (List.length prices / 2) in
   let #(left_count, right_count) =
-    Parallel.fork_join2
+    Parallel.Biased.fork_join2
       par
       (fun _par -> count_profitable_days left threshold)
       (fun _par -> count_profitable_days right threshold)

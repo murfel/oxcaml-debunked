@@ -13,7 +13,7 @@ depends: [
   "dune" {>= "3.20"}
   "ocaml"
   "ocaml-variants" {= "5.2.0+ox"}
-  "parallel" {= "v0.18~preview.130.83+317"}
+  "parallel" {= "v0.18~preview.130.106+341"}
   "ocamlformat" {= "0.26.2+ox"}
   "odoc" {with-doc}
 ]

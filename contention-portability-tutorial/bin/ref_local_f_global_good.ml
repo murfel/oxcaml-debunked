@@ -4,7 +4,7 @@ let f x = x := !x + 1
 
 let run (par : Parallel.t) =
   let x = ref 0 in
-  let _ = Parallel.fork_join2 par (fun _par -> f x) (fun _par -> 42) in
+  let _ = Parallel.Biased.fork_join2 par (fun _par -> f x) (fun _par -> 42) in
   !x
 ;;
 

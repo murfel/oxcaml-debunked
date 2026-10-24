@@ -15,7 +15,7 @@ let calc_stock_properties (par : Parallel.t) stock =
   let is_penny_stock stock = Float.(Stock.price stock < 1.0) in
   let is_five_digit_stock stock = Float.(Stock.price stock >= 10000.0) in
   let #(is_penny, is_five_digit) =
-    Parallel.fork_join2
+    Parallel.Biased.fork_join2
       par
       (fun _par -> is_penny_stock stock)
       (fun _par -> is_five_digit_stock stock)

@@ -28,7 +28,7 @@ let average_par (par : Parallel.t) tree =
     | Tree.Leaf x -> ~total:(Thing.price x), ~count:1
     | Tree.Node (l, r) ->
       let #((~total:total_l, ~count:count_l), (~total:total_r, ~count:count_r)) =
-        Parallel.fork_join2 par (fun par -> total par l) (fun par -> total par r)
+        Parallel.Biased.fork_join2 par (fun par -> total par l) (fun par -> total par r)
       in
       ~total:(total_l +. total_r), ~count:(count_l + count_r)
   in
