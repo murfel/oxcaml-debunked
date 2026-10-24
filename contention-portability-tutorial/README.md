@@ -50,20 +50,20 @@ OxCaml's `parallel` library uses a fork-join model for multidomain execution. Un
 
 #### Example
 
-Here we pass two computations: `a + b` and `c + d` into `Parallel.Biased.fork_join2`, and once both of them finish, we sum their results and return. When we submit `test_add4` to the scheduler, it will assign domains to run these computations. These might be two different domains, or a single domain might run both computations.
+Here we pass two computations: `a + b` and `c + d` into `Parallel.fork_join2`, and once both of them finish, we sum their results and return. When we submit `test_add4` to the scheduler, it will assign domains to run these computations. These might be two different domains, or a single domain might run both computations.
 
 Unlike under asynchronous execution that you might be familiar with from the Async library, the current thread will not be executing any following instructions until both computations finish. In fact, the current thread will also participate in computing the submitted computations.
 
 We also pass `par: Parallel.t`, which is an object that allows the scheduler to control the parallel computations.
 
-Note: this tutorial uses `Parallel.Biased.fork_join*`, which runs its first computation on the calling domain. Since `parallel` `v0.18~preview.130.106+341`, the unbiased `Parallel.fork_join*` requires every computation to be `shareable`, so none of them may mutate captured state.
+Note: `Parallel.fork_join*` requires every computation to be `shareable`, so they may read, but not mutate, captured state. When a computation needs to mutate captured state, this tutorial uses `Parallel.Biased.fork_join*` instead, which runs its first computation on the calling domain. We cover it [later](#portability-and-contention-in-the-fork-join-model).
 
 Note: here we use another new feature of OxCaml, [unboxed types](https://oxcaml.org/documentation/unboxed-types/01-intro/). `fork_join2` returns an unboxed tuple, so we pattern match an unboxed tuple with `let #(x, y) = ...`, so that the labels `x` and `y` now refer to the boxed values that we can use to construct the return value.
 
 ```ocaml
 let add4 (par : Parallel.t) a b c d =
   let #(a_plus_b, c_plus_d) =
-    Parallel.Biased.fork_join2 par
+    Parallel.fork_join2 par
       (fun _par -> a + b)
       (fun _par -> c + d)
   in
@@ -83,7 +83,7 @@ let () =
 ;;
 ```
 #### Structure
-Note that we use `Parallel.Biased.fork_join2` to spawn two computations, but there exist `fork_join3`, `4` and `5`. (The unbiased `Parallel.fork_join` also accepts a list of computations to run in parallel.)
+Note that we use `Parallel.fork_join2` to spawn two computations, but there exist `fork_join3`, `4` and `5`. (`Parallel.fork_join` also accepts a list of computations to run in parallel.)
 
 Each computation passed to `fork_join*` can itself start inner parallel computations by calling `fork_join*` again. A fork-join group of computations finishes when the last computation in the group finishes.
 
@@ -391,7 +391,7 @@ Let's take a closer look at the `parallel` library which provides us with the `f
 ```ocaml
 let run (par : Parallel.t) =
   let #(result1, result2) =
-    Parallel.Biased.fork_join2 par
+    Parallel.fork_join2 par
       (fun _par -> 1)
       (fun _par -> 42)
   in
@@ -518,6 +518,8 @@ We'd like to calculate properties of a stock (is a penny stock, is a five-digit 
 Motivation: you need to know the properties of a stock before you can safely work with it. Calculating properties is independent of each other and also takes a long time, so you parallelize the computation by instructions (same data, different instructions).
 
 (Syntax refresher: `Stock.price` refers to the function, not the field.)
+
+This example uses `Parallel.Biased.fork_join2`, so the compiler errors below follow its rule from the previous section: the second branch must be `portable`.
 ```ocaml
 (*  Compiles *)
 module Stock = struct
