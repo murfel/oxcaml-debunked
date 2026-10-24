@@ -31,6 +31,6 @@ let stock1 = Stock.create ~price:0.07
 let run par = calc_stock_properties par stock1
 
 let () =
-  let is_penny, is_five_digit = Parallel_utils.run_one_test ~f:run in
+  let is_penny, is_five_digit = Parallel_scheduler.with_parallel run in
   Printf.printf "result: %b %b\n" is_penny is_five_digit (* result: true false *)
 ;;

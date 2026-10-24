@@ -26,6 +26,6 @@ let stocks =
 let run par = count_penny_stocks_par par stocks 1.0
 
 let () =
-  let result = Parallel_utils.run_one_test ~f:run in
+  let result = Parallel_scheduler.with_parallel run in
   Printf.printf "result: %d\n" result
 ;;

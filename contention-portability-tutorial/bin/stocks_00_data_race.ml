@@ -65,6 +65,6 @@ let count_profitable_days_par (par : Parallel.t) prices threshold =
 let run par = count_profitable_days_par par prices threshold
 
 let () =
-  let result = Parallel_utils.run_one_test ~f:run in
+  let result = Parallel_scheduler.with_parallel run in
   Printf.printf "result (parallel): %d\n" result (* result: 4 *)
 ;;

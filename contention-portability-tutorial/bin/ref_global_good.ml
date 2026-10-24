@@ -25,6 +25,6 @@ let run (par : Parallel.t) =
 ;;
 
 let () =
-  let res = Parallel_utils.run_one_test ~f:run in
+  let res = Parallel_scheduler.with_parallel run in
   Printf.printf "result: %d\n" res
 ;;

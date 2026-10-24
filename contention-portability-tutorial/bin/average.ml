@@ -44,6 +44,6 @@ let test_tree_thing =
 let average_par_tree par = average_par par test_tree_thing
 
 let () =
-  let result = Parallel_utils.run_one_test ~f:average_par_tree in
+  let result = Parallel_scheduler.with_parallel average_par_tree in
   Printf.printf "result: %f\n" result
 ;;

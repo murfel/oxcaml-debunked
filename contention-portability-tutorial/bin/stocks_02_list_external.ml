@@ -49,6 +49,6 @@ let stocks =
 let run par = count_weird_stocks_par par stocks
 
 let () =
-  let penny, five_digit = Parallel_utils.run_one_test ~f:run in
+  let penny, five_digit = Parallel_scheduler.with_parallel run in
   Printf.printf "result: %d %d\n" penny five_digit (* result: 2 1 *)
 ;;

@@ -75,14 +75,10 @@ let test_add4 par = add4 par 1 10 100 1000
 (* result: 1111 *)
 ```
 
-To run the code above, include `parallel` and `parallel.scheduler` libraries into your `dune` config, create a scheduler, and pass the parallel computation to it. We will omit the scheduler creation and result-printing code from snippets from now on.
+To run the code above, include `parallel` and `parallel.scheduler` libraries into your `dune` config, and pass the parallel computation to `Parallel_scheduler.with_parallel`, which creates a scheduler, runs the computation, and returns its result. We will omit the scheduler and result-printing code from snippets from now on.
 ```ocaml
-let run_one_test ~(f : Parallel.t @ local -> 'a) : 'a =
-  Parallel_scheduler.with_parallel f
-;;
-
 let () =
-  let result = run_one_test ~f:test_add4 in
+  let result = Parallel_scheduler.with_parallel test_add4 in
   Printf.printf "result: %d\n" result
 ;;
 ```
@@ -402,11 +398,10 @@ let run (par : Parallel.t) =
   result1 + result2
 ;;
 
-let run_one_test ~(f : Parallel.t @ local -> 'a) : 'a =
-  Parallel_scheduler.with_parallel f
+let () =
+  let result = Parallel_scheduler.with_parallel run in
+  Printf.printf "result: %d\n" result
 ;;
-
-let () = run_one_test ~f:run
 ```
 
 This library creates and manages domains, so it must adhere to portability and contention rules itself. Let's check that they are necessary and sufficient.
