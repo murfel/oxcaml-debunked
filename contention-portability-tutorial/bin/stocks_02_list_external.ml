@@ -13,7 +13,7 @@ let rec count (lst @ contended) ~f =
   match lst with
   | [] -> 0
   | x :: xs ->
-    let acc = count_if xs ~f in
+    let acc = count xs ~f in
     if f x then 1 + acc else acc
 ;;
 
