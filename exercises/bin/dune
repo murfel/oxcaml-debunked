@@ -1,0 +1,5 @@
+(executables
+ (public_names exercises add4)
+ (names main add4)
+ (libraries exercises parallel parallel.scheduler) ;; portable base stdio)
+)
