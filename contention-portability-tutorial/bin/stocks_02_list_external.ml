@@ -1,5 +1,5 @@
-open Core
-open Par_samples
+(* open Core *)
+(* open Par_samples *)
 
 (* Cannot use List.count because it accepts the list as uncontended (default mode), *)
 (* since f is allowed to mutate list items. *)
@@ -8,6 +8,9 @@ open Par_samples
    compiler was able to infer that TODO *)
 
 (* Thus we use a custom annotated count. *)
+
+(* Commented out so that `dune build` succeeds: this code does not compile.
+   Uncomment to see the compiler error.
 
 let rec count (lst @ contended) ~f =
   match lst with
@@ -52,3 +55,4 @@ let () =
   let penny, five_digit = Parallel_scheduler.with_parallel run in
   Printf.printf "result: %d %d\n" penny five_digit (* result: 2 1 *)
 ;;
+*)

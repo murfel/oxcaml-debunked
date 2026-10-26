@@ -1,5 +1,5 @@
-open Core
-open Par_samples
+(* open Core *)
+(* open Par_samples *)
 
 (* Does not compile. *)
 
@@ -9,6 +9,9 @@ open Par_samples
    implementation in stock.ml. The implementation contained crucial information for mode
    inference, so now we need to add explicit mode annotations to convince the compiler
    that there's no possibility for a data race. *)
+
+(* Commented out so that `dune build` succeeds: this code does not compile.
+   Uncomment to see the compiler error.
 
 let calc_stock_properties (par : Parallel.t) stock =
   let is_penny_stock stock = Float.(Stock.price stock < 1.0) in
@@ -30,6 +33,7 @@ let () =
   Printf.printf "result: %b %b\n" is_penny is_five_digit
 ;;
 (* result: true false *)
+*)
 
 (* File "bin/stocks_01_shared_read_external.ml", line 21, characters 19-38: *)
 (* 21 | (fun _par -> is_five_digit_stock stock) *)

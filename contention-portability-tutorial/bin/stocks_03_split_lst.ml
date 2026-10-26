@@ -1,5 +1,8 @@
-open Core
-open Par_samples
+(* open Core *)
+(* open Par_samples *)
+
+(* Commented out so that `dune build` succeeds: this code does not compile.
+   Uncomment to see the compiler error.
 
 let count_penny_stocks_par (par : Parallel.t) prices threshold =
   let #(left, right) = List.split_n prices (List.length prices / 2) in
@@ -29,3 +32,4 @@ let () =
   let result = Parallel_scheduler.with_parallel run in
   Printf.printf "result: %d\n" result
 ;;
+*)

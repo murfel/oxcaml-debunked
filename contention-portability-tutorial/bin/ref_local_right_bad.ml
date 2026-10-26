@@ -5,6 +5,9 @@
 (* ^ *)
 (* Error: This value is contended but is expected to be uncontended. *)
 
+(* Commented out so that `dune build` succeeds: this code does not compile.
+   Uncomment to see the compiler error.
+
 let run (par : Parallel.t) =
   let x = ref 0 in
   let _ = Parallel.Biased.fork_join2 par (fun _par -> 42) (fun _par -> x := !x + 1) in
@@ -15,3 +18,4 @@ let () =
   let result = Parallel_scheduler.with_parallel run in
   Printf.printf "result: %d\n" result (* result: 1 *)
 ;;
+*)
