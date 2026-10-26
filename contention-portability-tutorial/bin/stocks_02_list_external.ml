@@ -1,13 +1,13 @@
 open Core
 open Par_samples
 
-(*  Cannot use List.count because it accepts the list as uncontended (default mode), *)
-(*  since f is allowed to mutate list items. *)
+(* Cannot use List.count because it accepts the list as uncontended (default mode), *)
+(* since f is allowed to mutate list items. *)
 
-(*  However, it worked before when Stock implementation was in the same file,
-  because the compiler was able to infer that TODO *)
+(* However, it worked before when Stock implementation was in the same file, because the
+   compiler was able to infer that TODO *)
 
-(*  Thus we use a custom annotated count. *)
+(* Thus we use a custom annotated count. *)
 
 let rec count (lst @ contended) ~f =
   match lst with
@@ -17,10 +17,10 @@ let rec count (lst @ contended) ~f =
     if f x then 1 + acc else acc
 ;;
 
-(*  Does not compile. *)
-(*  Replace both List.count entries with count to make it compile. *)
-(* 27 |       (fun _par -> count_five_digit_stocks stocks) *)
-(*                                                 ^^^^^^ *)
+(* Does not compile. *)
+(* Replace both List.count entries with count to make it compile. *)
+(* 27 | (fun _par -> count_five_digit_stocks stocks) *)
+(* ^^^^^^ *)
 (* Error: This value is contended but is expected to be uncontended. *)
 
 let count_weird_stocks_par (par : Parallel.t) stocks =

@@ -1,7 +1,7 @@
 open Core
 
-(*  Given a list of stocks, count how many of them are weird by each weird property, *)
-(*  in parallel by instruction (each property count is calculated on its own domain).*)
+(* Given a list of stocks, count how many of them are weird by each weird property, *)
+(* in parallel by instruction (each property count is calculated on its own domain). *)
 
 module Stock = struct
   type t = { price : float }

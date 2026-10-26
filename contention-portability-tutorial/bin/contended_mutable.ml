@@ -44,5 +44,5 @@ let run (par : Parallel.t) =
 
 let () =
   let () = Parallel_scheduler.with_parallel run in
-  Printf.printf "result: it compiles and runs!\n" (* result: it compiles and runs!*)
+  Printf.printf "result: it compiles and runs!\n" (* result: it compiles and runs! *)
 ;;

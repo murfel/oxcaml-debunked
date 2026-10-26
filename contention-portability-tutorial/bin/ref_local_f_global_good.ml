@@ -1,4 +1,4 @@
-(*  Compiles. *)
+(* Compiles. *)
 
 let f x = x := !x + 1
 

@@ -24,7 +24,7 @@ let _test_tree = Tree.Node (Leaf 3.0, Leaf 4.0)
 let average_par (par : Parallel.t) tree =
   let rec (total @ portable) par tree : total:float * count:int =
     match tree with
-    (*| Tree.Leaf x -> ~total:x, ~count:1*)
+    (* | Tree.Leaf x -> ~total:x, ~count:1 *)
     | Tree.Leaf x -> ~total:(Thing.price x), ~count:1
     | Tree.Node (l, r) ->
       let #((~total:total_l, ~count:count_l), (~total:total_r, ~count:count_r)) =
