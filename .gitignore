@@ -3,3 +3,6 @@ _build/
 
 # Editor/IDE files
 .idea/
+
+# macOS
+.DS_Store
