@@ -15,6 +15,8 @@
   stocks_01_shared_read_external
   stocks_02_list
   stocks_02_list_external
-  stocks_03_split_lst)
- (libraries par_samples parallel parallel.scheduler) ;; portable base stdio
+  stocks_03_split_lst
+  sorting
+  image_processing)
+ (libraries par_samples parallel parallel.scheduler capsule core)
  )
