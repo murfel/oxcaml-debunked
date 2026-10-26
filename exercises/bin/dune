@@ -1,5 +1,11 @@
 (executables
- (public_names exercises add4)
- (names main add4)
- (libraries exercises parallel parallel.scheduler) ;; portable base stdio)
-)
+ (public_names exercises add4 bank)
+ (names main add4 bank)
+ (libraries
+  exercises
+  core
+  await
+  parallel
+  parallel.scheduler
+  portable_lockfree_htbl)
+ )
