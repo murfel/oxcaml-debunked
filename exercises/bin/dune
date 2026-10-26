@@ -1,6 +1,6 @@
 (executables
- (public_names exercises add4 bank)
- (names main add4 bank)
+ (public_names exercises add4 bank counter)
+ (names main add4 bank counter)
  (libraries
   exercises
   core
