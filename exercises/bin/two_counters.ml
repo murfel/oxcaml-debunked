@@ -25,11 +25,20 @@ let run (par : Parallel.t) =
   let #((), ()) =
     Parallel.fork_join2 par (fun _par -> bump hits) (fun _par -> bump misses)
   in
-  let h, m =
-    Capsule.Sync.Mutex.with_lock Sync.blocking Lock.mutex ~f:(fun _sync access ->
-      !(Capsule.Data.unwrap ~access hits), !(Capsule.Data.unwrap ~access misses))
-  in
-  printf "hits: %d, misses: %d\n" h m
+  (* Reading the counters under the lock, leaving the capsule intact: *)
+(*   let h, m = *)
+(*     Capsule.Sync.Mutex.with_lock Sync.blocking Lock.mutex ~f:(fun _sync access -> *)
+(*       !(Capsule.Data.unwrap ~access hits), !(Capsule.Data.unwrap ~access misses)) *)
+(*   in *)
+(*   printf "hits: %d, misses: %d\n" h m *)
+  (* Destroy the capsule: poison the mutex, take its key and merge [Lock.k] into the
+     current capsule, so the counters become plain refs. [Lock.mutex] can't be locked
+     again after this. *)
+  let key = Capsule.Sync.Mutex.Expert.acquire_and_poison Sync.blocking Lock.mutex in
+  let access = Capsule.Prim.Key.destroy key in
+  let hits = Capsule.Data.unwrap ~access hits in
+  let misses = Capsule.Data.unwrap ~access misses in
+  printf "hits: %d, misses: %d\n" !hits !misses
 ;;
 
 let () = Parallel_scheduler.with_parallel run
