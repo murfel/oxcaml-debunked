@@ -7,7 +7,8 @@
   two_counters
   capsule_keys
   capsule_keys_either
-  capsule_keys_list)
+  capsule_keys_list
+  capsules)
  (names
   main
   add4
@@ -16,7 +17,8 @@
   two_counters
   capsule_keys
   capsule_keys_either
-  capsule_keys_list)
+  capsule_keys_list
+  capsules)
  (libraries
   exercises
   core
