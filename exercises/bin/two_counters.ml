@@ -9,7 +9,6 @@ module Lock = Capsule.Sync.Mutex.Create ()
    [Lock.mutex]. *)
 let hits : (int ref, Lock.k) Capsule.Data.t = Capsule.Data.create (fun () -> ref 0)
 let misses : (int ref, Lock.k) Capsule.Data.t = Capsule.Data.create (fun () -> ref 0)
-
 let iterations = 1_000_000
 
 (* Increment one counter, taking the shared lock on every iteration. *)
@@ -26,11 +25,11 @@ let run (par : Parallel.t) =
     Parallel.fork_join2 par (fun _par -> bump hits) (fun _par -> bump misses)
   in
   (* Reading the counters under the lock, leaving the capsule intact: *)
-(*   let h, m = *)
-(*     Capsule.Sync.Mutex.with_lock Sync.blocking Lock.mutex ~f:(fun _sync access -> *)
-(*       !(Capsule.Data.unwrap ~access hits), !(Capsule.Data.unwrap ~access misses)) *)
-(*   in *)
-(*   printf "hits: %d, misses: %d\n" h m *)
+  (* let h, m = *)
+  (* Capsule.Sync.Mutex.with_lock Sync.blocking Lock.mutex ~f:(fun _sync access -> *)
+  (* !(Capsule.Data.unwrap ~access hits), !(Capsule.Data.unwrap ~access misses)) *)
+  (* in *)
+  (*   printf "hits: %d, misses: %d\n" h m *)
   (* Destroy the capsule: poison the mutex, take its key and merge [Lock.k] into the
      current capsule, so the counters become plain refs. [Lock.mutex] can't be locked
      again after this. *)
