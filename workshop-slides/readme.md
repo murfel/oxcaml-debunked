@@ -1,3 +1,35 @@
+# Intro
+
+15:00 to 18:10, 3:10 hours
+
+- Intro ~10 min
+- Motivation and the contention mode ~20 min
+  - Exercises ~15 min
+- Portability ~20 min
+  - Exercises ~30 min
+- Break ~10 min
+- Capsules ~30 min
+  - Exercises ~30 min
+
+Total: 2:45
+
+- Discussion and outro ~the rest
+
+{pause up}
+### OxCaml
+- Developed by Jane Street with many partners
+{pause}
+- Released in July 2025, see oxcaml.org
+{pause}
+- Backwards compatible with OCaml
+{pause}
+- Preview APIs, no guarantees
+{pause}
+- Mostly **modes**, mostly for performance and correctness
+{pause}
+- Some things are upstreamed into OCaml, others will never be
+
+{pause up}
 # Contention and portability
 
 {pause}
