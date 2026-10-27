@@ -13,19 +13,11 @@ let () =
           )
     )
   in
-  let #(_, key2') =           (* key1' also works *)
+  let #(_, _key2') =
     Capsule.Prim.Key.with_password key2 ~f:(fun password ->
         Capsule.Prim.access ~password ~f:(fun access ->
             !(Capsule.Data.unwrap ~access data2)
           )
       )
-  in
-
-  let #(_, _) =
-    Capsule.Prim.Key.with_password key2' ~f:(fun password ->
-        Capsule.Prim.access ~password ~f:(fun access ->
-            !(Capsule.Data.unwrap ~access data2)
-          )
-    )
   in
   print_endline "Done"
