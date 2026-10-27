@@ -660,8 +660,9 @@ Deepness
 
 {pause}
 
-## Next
-- ✅ contention and portability
-- ✅ atomics
-- **capsules** (mutex, read-write lock, `@ shared` mode on the contention axis)
-- **fork-join framework** for spawning domains
+## Summary
+- contention and portability
+- `@ shared` and `@ sharable`
+- atomics
+- capsules (access, password, key; mutex)
+- fork-join framework for spawning domains
