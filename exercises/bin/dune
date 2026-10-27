@@ -9,7 +9,8 @@
   capsule_keys_either
   capsule_keys_list
   capsules
-  capsules_move_ownership)
+  capsules_move_ownership
+  stock_usage)
  (names
   main
   add4
@@ -20,7 +21,8 @@
   capsule_keys_either
   capsule_keys_list
   capsules
-  capsules_move_ownership)
+  capsules_move_ownership
+  stock_usage)
  (libraries
   exercises
   core
