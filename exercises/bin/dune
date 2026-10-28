@@ -7,6 +7,7 @@
   b0_portability
   b1_captured_vs_parameters
   b2_fork_join
+  b3_on_join
   add4
   bank
   counter
@@ -25,6 +26,7 @@
   b0_portability
   b1_captured_vs_parameters
   b2_fork_join
+  b3_on_join
   add4
   bank
   counter
