@@ -1,6 +1,7 @@
 (executables
  (public_names
   exercises
+  a00_stock
   add4
   bank
   counter
@@ -14,6 +15,7 @@
   fork_join)
  (names
   main
+  a00_stock
   add4
   bank
   counter
