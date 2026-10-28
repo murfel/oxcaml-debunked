@@ -1,8 +1,8 @@
 module Stock = struct
-  type t = {
-    ticker : string;
-    mutable price : float
-  }
+  type t =
+    { ticker : string
+    ; mutable price : float
+    }
 
   let create ~ticker ~price = { ticker; price }
   let print_ticker { ticker; _ } = Printf.printf "%s\n" ticker
@@ -23,7 +23,7 @@ end
 
 let () =
   let _stock = Stock.create ~ticker:"AAPL" ~price:100.0 in
-(*  f1 stock *)
+  (* f1 stock *)
   ()
 ;;
 
@@ -31,10 +31,10 @@ let () =
 
 (* TODO(natasha) *)
 module AtomicStock = struct
-  type t = {
-    ticker : string;
-    mutable price : float
-  }
+  type t =
+    { ticker : string
+    ; mutable price : float
+    }
 
   let create ~ticker ~price = { ticker; price }
   let print_ticker { ticker; _ } = Printf.printf "%s\n" ticker
@@ -47,6 +47,6 @@ end
 
 let () =
   let _stock = AtomicStock.create ~ticker:"AAPL" ~price:100.0 in
-(*  f7 stock *)
+  (* f7 stock *)
   ()
 ;;

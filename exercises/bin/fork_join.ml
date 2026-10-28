@@ -8,7 +8,7 @@
    functions passed into the real fork_join2, and work out the requirements for the custom
    fork_join2 backwards from there.
 *)
-let my_fork_join2 (par : Parallel.t) f g (a @ shared shareable) (b @ shared shareable) =
+let my_fork_join2 (par : Parallel.t) f g (a @ shareable shared) (b @ shareable shared) =
   Parallel.fork_join2 par (fun _par -> f a) (fun _par -> g b)
 ;;
 

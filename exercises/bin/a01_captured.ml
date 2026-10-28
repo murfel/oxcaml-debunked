@@ -2,15 +2,15 @@
 
 (* Example 1 *)
 (* let () = *)
-(*  let (r @ contended) = ref 0 in *)
-(*  let incr () = r := !r + 1; !r in *)
+(* let (r @ contended) = ref 0 in *)
+(* let incr () = r := !r + 1; !r in *)
 (*  Printf.printf "%d\n" (incr ()); *)
 (* ;; *)
 
 (* Example 1 *)
 (* let () = *)
-(*  let (r @ uncontended) = ref 0 in *)
-(*  let incr () = r := !r + 1; !r in *)
+(* let (r @ uncontended) = ref 0 in *)
+(* let incr () = r := !r + 1; !r in *)
 (*  Printf.printf "%d\n" (incr ()); *)
 (* ;; *)
 
