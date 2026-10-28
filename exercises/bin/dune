@@ -5,6 +5,7 @@
   a1_captured
   a2_applier
   b0_portability
+  b1_captured_vs_parameters
   add4
   bank
   counter
@@ -22,6 +23,7 @@
   a1_captured
   a2_applier
   b0_portability
+  b1_captured_vs_parameters
   add4
   bank
   counter
