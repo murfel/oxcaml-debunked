@@ -6,18 +6,30 @@
 - Motivation and the contention mode ~20 min
   - Exercises ~20 min
 - Portability ~20 min
+- Fork-join scheduler ~10 min
   - Exercises ~30 min
-- **Break ~10 min**
+- **Break ~10 min**, back at 17:00
 - Capsules ~30 min
   - Exercises ~30 min
+- Exit survey ~10 min
 
-Total: 2:50
+---
 
-- Discussion and outro ~the rest
-- Bonus
-  - Fork-join scheduler in details
-  - Parallel sequence
-  - Parallel arrays
+{pause up}
+### Introductions
+
+{pause}
+
+Introducing us
+
+{pause}
+
+Introducing you
+- goals
+- OCaml experience
+- || programming experience
+
+---
 
 {pause up}
 ### OxCaml
@@ -417,6 +429,17 @@ A function taking a `@ uncontended` parameter is not restricted: it can access a
 
 [//]: # (Using a value in a certain restrictive mode is like taking a restrictive view on the value: all the parts are still there, but you can only use some of them)
 
+
+---
+{pause up}
+## Contention exercises
+
+Letter A
+
+0. Stock
+1. Accessing captured values
+2. Applier
+
 ---
 {pause up}
 # Portability mode axis
@@ -634,6 +657,366 @@ let result = Domain.join d
 ---
 
 {pause up}
+## Fork-join framework
+
+{pause}
+
+- `Parallel.fork_join2` runs two functions in parallel and waits for both
+{pause}
+- A scheduler, run on a pool of threads
+
+{pause}
+
+```ocaml
+let add4 (par : Parallel.t) a b c d =
+  let #(a_plus_b, c_plus_d) =
+    Parallel.fork_join2 par
+        (fun _par -> a + b)
+        (fun _par -> c + d)
+  in
+  a_plus_b + c_plus_d
+
+let run par = add4 par 1 10 100 1000
+
+let () =
+  let result =
+    Parallel_scheduler.with_parallel run
+  in
+  Printf.printf "result: %d\n" result (* result: 1111 *)
+```
+
+---
+
+{pause up}
+## Fork-join framework
+<img src="fork-join.png" width="1200">
+
+---
+
+{pause up}
+## `fork_join2` type (almost true, simplified)
+
+```ocaml
+module Parallel : sig
+  type t
+
+  val fork_join2
+    :  t
+    -> (t -> 'a) @ portable
+    -> (t -> 'b) @ portable
+    -> #('a * 'b)
+end
+```
+
+---
+
+{pause up}
+## `fork_join2` type (true)
+
+```ocaml
+module Parallel : sig
+  type t
+
+  val fork_join2
+    :  t @ local
+    -> (t @ local -> 'a) @ forkable local once shareable
+    -> (t @ local -> 'b) @ once shareable
+    -> #('a * 'b)
+end
+```
+
+---
+
+{pause up}
+## Shared and shareable
+
+Denotes (potentially) mutable values that cannot be modified
+
+**Data**: `@ uncontended` $\le$ ` @ shared` $\le$ `@ contended` (contention axis)
+
+{pause}
+
+**Functions**: `@ portable` $\le$ `@ shareable` $\le$ `@ nonportable` (portability axis)
+
+- `@ portable` can only capture `@ portable`, `@ contended`
+- `@ shareable` can only capture `@ portable`, `@ shareable`, `@ contended`, `@ shared`
+- `@ nonportable` can capture anything
+
+**Fork-join**:
+```ocaml
+module Parallel : sig
+  type t
+
+  val fork_join2
+    :  t
+    -> (t -> 'a) @ shareable
+    -> (t -> 'b) @ shareable
+    -> #('a * 'b)
+end
+```
+
+---
+
+{pause up}
+## Shared example
+
+Note: `r.contents`, not `!r`
+
+```ocaml
+let run (par : Parallel.t) =
+  let r = ref 0 in
+  r := !r + 1;                      (* r @ uncontended *)
+  let #(a, b) =
+    Parallel.fork_join2 par
+      (fun _par -> r.contents + 10) (* r @ shared: read only *)
+      (fun _par -> r.contents + 20)
+  in
+  r := !r + a + b;                  (* r @ uncontended again *)
+  Printf.printf "r = %d\n" !r       (* r = 33 *)
+
+let () = Parallel_scheduler.with_parallel run
+```
+
+{pause}
+
+Note: `!r` inside a branch doesn't compile: `(!)` expects `@ uncontended`
+
+---
+
+{pause up}
+## Portability exercises
+
+Letter B
+
+0. Simple
+1. Portability captured values vs arguments 
+2. Custom `fork_join2`
+3. Think: can you express a certain pattern?
+
+---
+
+{pause up}
+## Patterns you can't express with contention and portability only
+
+{pause}
+
+```ocaml
+(* Doesn't compile *)
+let run (par : Parallel.t) =
+  let r = ref 0 in
+  r := !r + 1;                      (* r @ uncontended *)
+  let #(a, b) =
+    Parallel.fork_join2 par
+      (fun _par -> r := !r + 42) (* we want r @ uncontended here *)
+      (fun _par -> ())
+  in
+  r := !r + a + b;                  (* r @ uncontended again *)
+  Printf.printf "r = %d\n" !r       (* r = 33 *)
+
+let () = Parallel_scheduler.with_parallel run
+```
+
+
+---
+
+{pause up}
+## Capsules
+
+[Illustration](https://youtu.be/kuoT6CrSY70?si=8421Hf15u1fJe2eF&t=830)
+
+---
+
+{pause up}
+## Capsules: create and pass around
+
+{pause}
+
+```ocaml
+let capsule_ref = Capsule.Data.create (fun () -> ref 0)
+> val capsule_ref : (int ref, 'k) Capsule.Data.t
+```
+
+`'k` is a capsule _brand_ (unique identifier)
+
+{pause}
+
+`'k` is an existential type: the compiler knows it but won't tell us
+
+{pause}
+
+`Capsule.Data.t` crosses `contention` and `portability`
+
+{pause}
+
+We can **share** across fork-join freely now, but other mechnisms control that you can **open** it.
+
+---
+
+{pause up}
+## Capsules: access, password, key
+
+{pause}
+
+- **key** gives a password
+- **password** gives an access
+- **access** opens the capsule
+
+{pause}
+
+```ocaml
+let (P key) = Capsule.Prim.create () in
+let data = Capsule.Data.create (fun () -> ref 1) in
+let #(raw_data, _key') =
+  Capsule.Prim.Key.with_password key ~f:(fun password ->
+    Capsule.Prim.access ~password ~f:(fun access ->
+      !(Capsule.Data.unwrap ~access data))) in
+...
+```
+
+{pause}
+
+Each mechanism protects at its own level
+
+---
+{pause up}
+## Capsules: access, _, _
+
+{pause}
+
+Access is `@ uncontended`, but `fork_join2` expects a `@ portable` (or at least `@ shareable`) function
+
+{pause}
+
+```ocaml
+let increment ~(access : 'k Capsule.Access.t) capsule_ref =
+  let ref = Capsule.Data.unwrap ~access capsule_ref in
+  ref := !ref + 1
+;;
+```
+
+{pause}
+
+```ocaml
+let parallel_increment parallel ~(access : 'k Capsule.Access.t) =
+  let capsule_ref = Capsule.Data.create (fun () -> ref 0) in
+  Parallel.fork_join2 parallel
+    (fun _ -> increment ~access capsule_ref)
+(*                       ^^^^^^                            *)
+(* This value is contended but expected to be uncontended. *)
+    (fun _ -> increment ~access capsule_ref)
+;;
+```
+
+---
+
+{pause up}
+## Capsules: _, password, _
+
+{pause}
+
+Password is `@ local`, but `fork_join2` expects a `@ global` function
+
+{pause}
+
+```ocaml
+let increment ~(password : 'k Capsule.Password.t @ local) capsule_ref =
+  Capsule.Prim.access ~password (fun access ->
+    let ref = Capsule.Data.unwrap ~access capsule_ref in
+    ref := !ref + 1)
+  [@nontail]
+;;
+```
+
+{pause}
+
+```ocaml
+let parallel_increment parallel
+      ~(password : 'k Capsule.Password.t @ local) =
+  let capsule_ref = Capsule.Data.create (fun () -> ref 0) in
+  Parallel.fork_join2 parallel
+    (fun _ -> increment ~password capsule_ref)
+(*                       ^^^^^^^^                          *)
+(* The value password is local, so cannot be used inside a *)
+(* function that might escape.                             *)
+    (fun _ -> increment ~password capsule_ref)
+  [@nontail]
+;;
+```
+
+---
+
+{pause up}
+## Capsules: _, _, key
+
+{pause}
+
+Key is `@ unique`, so can only be passed to one branch of `fork_join2` (ownership)
+
+{pause}
+
+```ocaml
+let parallel_keys parallel =
+  let (P key) = Capsule.create () in
+  let fresh_ref = Capsule.Data.create (fun () -> ref 0) in
+  let _ = Parallel.fork_join2 parallel
+    (fun _ -> Capsule.Prim.Key.with_password key ~f:(fun _ -> ()))
+    (fun _ -> Capsule.Prim.Key.with_password key ~f:(fun _ -> ()))
+(*                                           ^^^           *)
+(* This value is used here, but it is already being used   *)
+(* as unique.                                              *)
+  in ()
+;;
+```
+
+---
+
+{pause up}
+## Capsules: access, password, key summary
+
+{pause}
+
+| Type            | Represents                               | Provides                | Safety Axis |
+|-----------------|------------------------------------------|-------------------------|-------------|
+| `'k Access.t`   | Proof that `'k` is the current capsule.  | Access to data in `'k`. | Contention  |
+| `'k Password.t` | Permission to enter capsule `'k`.        | `'k Access.t`           | Locality    |
+| `'k Key.t`      | The capsule `'k` itself.                 | `'k Password.t`         | Uniqueness  |
+
+---
+
+{pause up}
+## Capsules: mutexes
+
+{pause}
+
+```ocaml
+let parallel_mutexes parallel =
+  let (P key) = Capsule.create () in
+  let mutex = Capsule.Mutex.create key in
+  let capsule_ref = Capsule.Data.create (fun () -> ref 0) in
+    Parallel.fork_join2 parallel
+    (fun _ ->
+      Capsule.Mutex.with_lock mutex
+        ~f:(fun password -> increment ~password capsule_ref))
+    (fun _ ->
+      Capsule.Mutex.with_lock mutex
+        ~f:(fun password -> increment ~password capsule_ref))
+;;
+```
+
+---
+{pause up}
+## Capsules: exercises
+
+Letter C
+
+0. Move ownership with capsules
+1. Counter read-write
+2. Bank
+3. Password manipulation
+
+---
+
+{pause up}
 ## Summary
 
 {pause}
@@ -650,11 +1033,11 @@ A value contains parts which are **data** and which are **functions**
 
 {pause}
 
-**Data**: `@ uncontended` $\le$ `@ contended` (contention axis)
+**Data**: `@ uncontended` $\le$ `@ shared` $\le$ `@ contended` (contention axis)
 
 {pause}
 
-**Functions**: `@ portable` $\le$ `@ nonportable` (portability axis)
+**Functions**: `@ portable` $\le$ `@ shareable` $\le$ `@ nonportable` (portability axis)
 
 {pause}
 
@@ -666,9 +1049,46 @@ Deepness
 
 {pause}
 
-## Summary
-- contention and portability
-- `@ shared` and `@ sharable`
-- atomics
-- capsules (access, password, key; mutex)
-- fork-join framework for spawning domains
+Atomics
+
+{pause}
+
+Capsules (access, password, key; mutex)
+
+{pause}
+
+Other mode axes: locality (`@ local`, `@ global`), uniqueness (`@ unique`, `@ aliased`), linearity (`@ many`, `@ once`)
+
+{pause}
+
+Fork-join framework for spawning domains
+
+
+---
+{pause up}
+## Exit survey
+
+---
+{pause up}
+## Next
+
+- Didn't cover: parallel sequences, parallel arrrays [(official tutorial)](https://oxcaml.org/documentation/tutorials/intro-to-parallelism-part-2/)
+
+Refresh
+- https://github.com/murfel/oxcaml-debunked
+- My YouTube primer on contention and portability: https://youtu.be/xYk-qTAgLzE
+- More on capsules: https://oxcaml.org/documentation/parallelism/capsules/
+
+New perspectives
+- [Carine's article: Exploring data race freedom in OxCaml](https://tarides.com/blog/2026-07-15-exploring-static-data-race-freedom-in-oxcaml/)
+- Read the original paper: [A. Linn et al. Data Race Freedom à la Mode](https://dl.acm.org/doi/10.1145/3704859)
+
+More
+- Explore other modes at [oxcaml.org](https://oxcaml.org)
+
+Ways to connect
+- Join OCaml discord https://discord.gg/cCYQbqN #oxcaml channel
+- https://fun-ocaml.com/ Jan 25-26, 2027 in Bengaluru, India
+
+Pass it forward
+- Give a 'takeaways' talk to your colleagues

@@ -1163,25 +1163,37 @@ relevance:0},{begin:/-&gt;/}]})})();hljs.registerLanguage(&quot;ocaml&quot;,e)})
 &lt;li&gt;&lt;span&gt;Intro ~10 min&lt;/span&gt;&lt;/li&gt;
 &lt;li&gt;&lt;span&gt;Motivation and the contention mode ~20 min&lt;/span&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;span&gt;Exercises ~15 min&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span&gt;Exercises ~20 min&lt;/span&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
-&lt;li&gt;&lt;span&gt;Portability ~20 min&lt;/span&gt;
+&lt;li&gt;&lt;span&gt;Portability ~20 min&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span&gt;Fork-join scheduler ~10 min&lt;/span&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;span&gt;Exercises ~30 min&lt;/span&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
-&lt;li&gt;&lt;span&gt;Break ~10 min&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;span&gt;Break ~10 min&lt;/span&gt;&lt;/strong&gt;&lt;span&gt;, back at 17:00&lt;/span&gt;&lt;/li&gt;
 &lt;li&gt;&lt;span&gt;Capsules ~30 min&lt;/span&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;span&gt;Exercises ~30 min&lt;/span&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
+&lt;li&gt;&lt;span&gt;Exit survey ~10 min&lt;/span&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;span&gt;Total: 2:45&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;h3 up-at-unpause pause&gt;&lt;span&gt;Introductions&lt;/span&gt;&lt;/h3&gt;
+&lt;div pause&gt;&lt;/div&gt;
+&lt;p&gt;&lt;span&gt;Introducing us&lt;/span&gt;&lt;/p&gt;
+&lt;div pause&gt;&lt;/div&gt;
+&lt;p&gt;&lt;span&gt;Introducing you&lt;/span&gt;&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;span&gt;Discussion and outro ~the rest&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span&gt;goals&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span&gt;OCaml experience&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span&gt;|| programming experience&lt;/span&gt;&lt;/li&gt;
 &lt;/ul&gt;
+&lt;/div&gt;
+&lt;div&gt;
 &lt;h3 up-at-unpause pause&gt;&lt;span&gt;OxCaml&lt;/span&gt;&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;span&gt;Developed by Jane Street with many partners&lt;/span&gt;&lt;/li&gt;
@@ -1234,8 +1246,10 @@ relevance:0},{begin:/-&gt;/}]})})();hljs.registerLanguage(&quot;ocaml&quot;,e)})
 &lt;p&gt;&lt;strong&gt;&lt;span&gt;Building blocks&lt;/span&gt;&lt;/strong&gt;&lt;span&gt; of multidomain computing in OxCaml:&lt;/span&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;span&gt;Mode axes: &lt;/span&gt;&lt;strong&gt;&lt;span&gt;contention&lt;/span&gt;&lt;/strong&gt;&lt;span&gt;, &lt;/span&gt;&lt;strong&gt;&lt;span&gt;portability&lt;/span&gt;&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;&lt;span&gt;Synchronization primitives: &lt;/span&gt;&lt;strong&gt;&lt;span&gt;atomics&lt;/span&gt;&lt;/strong&gt;&lt;span&gt;, &lt;/span&gt;&lt;strong&gt;&lt;span&gt;capsules&lt;/span&gt;&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;&lt;span&gt;Domain management framework (fork-join pool)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span&gt;Synchronization primitives: &lt;/span&gt;&lt;strong&gt;&lt;span&gt;atomics&lt;/span&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span&gt;Code structuring primitives: &lt;/span&gt;&lt;strong&gt;&lt;span&gt;capsules&lt;/span&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span&gt;More synchonization primitives: &lt;/span&gt;&lt;strong&gt;&lt;span&gt;capsules&lt;/span&gt;&lt;/strong&gt;&lt;span&gt; with a &lt;/span&gt;&lt;strong&gt;&lt;span&gt;mutex&lt;/span&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span&gt;Domain management framework (a scheduler): &lt;/span&gt;&lt;strong&gt;&lt;span&gt;fork-join pool&lt;/span&gt;&lt;/strong&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
 &lt;div&gt;
@@ -1463,6 +1477,15 @@ let bar (p @ uncontended) = foo p (* ✅ *)
 &lt;p&gt;&lt;span&gt;A function taking a &lt;/span&gt;&lt;code&gt;@ uncontended&lt;/code&gt;&lt;span&gt; parameter is not restricted: it can access all its parameter's parts, including synchronized mutable data&lt;/span&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div&gt;
+&lt;h2 up-at-unpause pause&gt;&lt;span&gt;Contention exercises&lt;/span&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;span&gt;Letter A&lt;/span&gt;&lt;/p&gt;
+&lt;ol start=&quot;0&quot;&gt;
+&lt;li&gt;&lt;span&gt;Stock&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span&gt;Accessing captured values&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span&gt;Applier&lt;/span&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;div&gt;
 &lt;h1 up-at-unpause pause&gt;&lt;span&gt;Portability mode axis&lt;/span&gt;&lt;/h1&gt;
 &lt;p&gt;&lt;span&gt;Applies to &lt;/span&gt;&lt;strong&gt;&lt;span&gt;functions&lt;/span&gt;&lt;/strong&gt;&lt;span&gt;, and &lt;/span&gt;&lt;strong&gt;&lt;span&gt;values containing functions&lt;/span&gt;&lt;/strong&gt;&lt;/p&gt;
 &lt;div pause&gt;&lt;/div&gt;
@@ -1589,6 +1612,294 @@ let result = Domain.join d
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div&gt;
+&lt;h2 up-at-unpause pause&gt;&lt;span&gt;Fork-join framework&lt;/span&gt;&lt;/h2&gt;
+&lt;div pause&gt;&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Parallel.fork_join2&lt;/code&gt;&lt;span&gt; runs two functions in parallel and waits for both&lt;/span&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div pause&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;span&gt;A scheduler, run on a pool of threads&lt;/span&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div pause&gt;&lt;/div&gt;
+&lt;pre&gt;&lt;code class=&quot;language-ocaml&quot;&gt;let add4 (par : Parallel.t) a b c d =
+  let #(a_plus_b, c_plus_d) =
+    Parallel.fork_join2 par
+        (fun _par -&amp;gt; a + b)
+        (fun _par -&amp;gt; c + d)
+  in
+  a_plus_b + c_plus_d
+
+let run par = add4 par 1 10 100 1000
+
+let () =
+  let result =
+    Parallel_scheduler.with_parallel run
+  in
+  Printf.printf &amp;quot;result: %d\n&amp;quot; result (* result: 1111 *)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;h2 up-at-unpause pause&gt;&lt;span&gt;Fork-join framework&lt;/span&gt;&lt;/h2&gt;
+&lt;img src=&quot;fork-join.png&quot; width=&quot;1200&quot;&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;h2 up-at-unpause pause&gt;&lt;code&gt;fork_join2&lt;/code&gt;&lt;span&gt; type (almost true, simplified)&lt;/span&gt;&lt;/h2&gt;
+&lt;pre&gt;&lt;code class=&quot;language-ocaml&quot;&gt;module Parallel : sig
+  type t
+
+  val fork_join2
+    :  t
+    -&amp;gt; (t -&amp;gt; 'a) @ portable
+    -&amp;gt; (t -&amp;gt; 'b) @ portable
+    -&amp;gt; #('a * 'b)
+end
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;h2 up-at-unpause pause&gt;&lt;code&gt;fork_join2&lt;/code&gt;&lt;span&gt; type (true)&lt;/span&gt;&lt;/h2&gt;
+&lt;pre&gt;&lt;code class=&quot;language-ocaml&quot;&gt;module Parallel : sig
+  type t
+
+  val fork_join2
+    :  t @ local
+    -&amp;gt; (t @ local -&amp;gt; 'a) @ forkable local once shareable
+    -&amp;gt; (t @ local -&amp;gt; 'b) @ once shareable
+    -&amp;gt; #('a * 'b)
+end
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;h2 up-at-unpause pause&gt;&lt;span&gt;Shared and shareable&lt;/span&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;span&gt;Denotes (potentially) mutable values that cannot be modified&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;span&gt;Data&lt;/span&gt;&lt;/strong&gt;&lt;span&gt;: &lt;/span&gt;&lt;code&gt;@ uncontended&lt;/code&gt;&lt;span&gt; &lt;/span&gt;\(\le\)&lt;span&gt; &lt;/span&gt;&lt;code&gt; @ shared&lt;/code&gt;&lt;span&gt; &lt;/span&gt;\(\le\)&lt;span&gt; &lt;/span&gt;&lt;code&gt;@ contended&lt;/code&gt;&lt;span&gt; (contention axis)&lt;/span&gt;&lt;/p&gt;
+&lt;div pause&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;&lt;span&gt;Functions&lt;/span&gt;&lt;/strong&gt;&lt;span&gt;: &lt;/span&gt;&lt;code&gt;@ portable&lt;/code&gt;&lt;span&gt; &lt;/span&gt;\(\le\)&lt;span&gt; &lt;/span&gt;&lt;code&gt;@ shareable&lt;/code&gt;&lt;span&gt; &lt;/span&gt;\(\le\)&lt;span&gt; &lt;/span&gt;&lt;code&gt;@ nonportable&lt;/code&gt;&lt;span&gt; (portability axis)&lt;/span&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;@ portable&lt;/code&gt;&lt;span&gt; can only capture &lt;/span&gt;&lt;code&gt;@ portable&lt;/code&gt;&lt;span&gt;, &lt;/span&gt;&lt;code&gt;@ contended&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;@ shareable&lt;/code&gt;&lt;span&gt; can only capture &lt;/span&gt;&lt;code&gt;@ portable&lt;/code&gt;&lt;span&gt;, &lt;/span&gt;&lt;code&gt;@ shareable&lt;/code&gt;&lt;span&gt;, &lt;/span&gt;&lt;code&gt;@ contended&lt;/code&gt;&lt;span&gt;, &lt;/span&gt;&lt;code&gt;@ shared&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;@ nonportable&lt;/code&gt;&lt;span&gt; can capture anything&lt;/span&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;&lt;span&gt;Fork-join&lt;/span&gt;&lt;/strong&gt;&lt;span&gt;:&lt;/span&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-ocaml&quot;&gt;module Parallel : sig
+  type t
+
+  val fork_join2
+    :  t
+    -&amp;gt; (t -&amp;gt; 'a) @ shareable
+    -&amp;gt; (t -&amp;gt; 'b) @ shareable
+    -&amp;gt; #('a * 'b)
+end
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;h2 up-at-unpause pause&gt;&lt;span&gt;Shared example&lt;/span&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;span&gt;Note: &lt;/span&gt;&lt;code&gt;r.contents&lt;/code&gt;&lt;span&gt;, not &lt;/span&gt;&lt;code&gt;!r&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-ocaml&quot;&gt;let run (par : Parallel.t) =
+  let r = ref 0 in
+  r := !r + 1;                      (* r @ uncontended *)
+  let #(a, b) =
+    Parallel.fork_join2 par
+      (fun _par -&amp;gt; r.contents + 10) (* r @ shared: read only *)
+      (fun _par -&amp;gt; r.contents + 20)
+  in
+  r := !r + a + b;                  (* r @ uncontended again *)
+  Printf.printf &amp;quot;r = %d\n&amp;quot; !r       (* r = 33 *)
+
+let () = Parallel_scheduler.with_parallel run
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div pause&gt;&lt;/div&gt;
+&lt;p&gt;&lt;span&gt;Note: &lt;/span&gt;&lt;code&gt;!r&lt;/code&gt;&lt;span&gt; inside a branch doesn't compile: &lt;/span&gt;&lt;code&gt;(!)&lt;/code&gt;&lt;span&gt; expects &lt;/span&gt;&lt;code&gt;@ uncontended&lt;/code&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;h2 up-at-unpause pause&gt;&lt;span&gt;Portability exercises&lt;/span&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;span&gt;Letter B&lt;/span&gt;&lt;/p&gt;
+&lt;ol start=&quot;0&quot;&gt;
+&lt;li&gt;&lt;span&gt;Simple&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span&gt;Portability captured values vs arguments&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span&gt;Custom &lt;/span&gt;&lt;code&gt;fork_join2&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span&gt;Think: can you express a certain pattern?&lt;/span&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;h2 up-at-unpause pause&gt;&lt;span&gt;Patterns you can't express with contention and portability only&lt;/span&gt;&lt;/h2&gt;
+&lt;div pause&gt;&lt;/div&gt;
+&lt;pre&gt;&lt;code class=&quot;language-ocaml&quot;&gt;(* Doesn't compile *)
+let run (par : Parallel.t) =
+  let r = ref 0 in
+  r := !r + 1;                      (* r @ uncontended *)
+  let #(a, b) =
+    Parallel.fork_join2 par
+      (fun _par -&amp;gt; r := !r + 42) (* we want r @ uncontended here *)
+      (fun _par -&amp;gt; ())
+  in
+  r := !r + a + b;                  (* r @ uncontended again *)
+  Printf.printf &amp;quot;r = %d\n&amp;quot; !r       (* r = 33 *)
+
+let () = Parallel_scheduler.with_parallel run
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;h2 up-at-unpause pause&gt;&lt;span&gt;Capsules&lt;/span&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&quot;https://youtu.be/kuoT6CrSY70?si=8421Hf15u1fJe2eF&amp;amp;t=830&quot;&gt;&lt;span&gt;Illustration&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;h2 up-at-unpause pause&gt;&lt;span&gt;Capsules: create and pass around&lt;/span&gt;&lt;/h2&gt;
+&lt;div pause&gt;&lt;/div&gt;
+&lt;pre&gt;&lt;code class=&quot;language-ocaml&quot;&gt;let capsule_ref = Capsule.Data.create (fun () -&amp;gt; ref 0)
+&amp;gt; val capsule_ref : (int ref, 'k) Capsule.Data.t
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;'k&lt;/code&gt;&lt;span&gt; is a capsule &lt;/span&gt;&lt;em&gt;&lt;span&gt;brand&lt;/span&gt;&lt;/em&gt;&lt;span&gt; (unique identifier)&lt;/span&gt;&lt;/p&gt;
+&lt;div pause&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;'k&lt;/code&gt;&lt;span&gt; is an existential type: the compiler knows it but won't tell us&lt;/span&gt;&lt;/p&gt;
+&lt;div pause&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;Capsule.Data.t&lt;/code&gt;&lt;span&gt; crosses &lt;/span&gt;&lt;code&gt;contention&lt;/code&gt;&lt;span&gt; and &lt;/span&gt;&lt;code&gt;portability&lt;/code&gt;&lt;/p&gt;
+&lt;div pause&gt;&lt;/div&gt;
+&lt;p&gt;&lt;span&gt;We can &lt;/span&gt;&lt;strong&gt;&lt;span&gt;share&lt;/span&gt;&lt;/strong&gt;&lt;span&gt; across fork-join freely now, but other mechnisms control that you can &lt;/span&gt;&lt;strong&gt;&lt;span&gt;open&lt;/span&gt;&lt;/strong&gt;&lt;span&gt; it.&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;h2 up-at-unpause pause&gt;&lt;span&gt;Capsules: access, password, key&lt;/span&gt;&lt;/h2&gt;
+&lt;div pause&gt;&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;span&gt;key&lt;/span&gt;&lt;/strong&gt;&lt;span&gt; gives a password&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;span&gt;password&lt;/span&gt;&lt;/strong&gt;&lt;span&gt; gives an access&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;span&gt;access&lt;/span&gt;&lt;/strong&gt;&lt;span&gt; opens the capsule&lt;/span&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div pause&gt;&lt;/div&gt;
+&lt;pre&gt;&lt;code class=&quot;language-ocaml&quot;&gt;let (P key) = Capsule.Prim.create () in
+let data = Capsule.Data.create (fun () -&amp;gt; ref 1) in
+let #(raw_data, _key') =
+  Capsule.Prim.Key.with_password key ~f:(fun password -&amp;gt;
+    Capsule.Prim.access ~password ~f:(fun access -&amp;gt;
+      !(Capsule.Data.unwrap ~access data))) in
+...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div pause&gt;&lt;/div&gt;
+&lt;p&gt;&lt;span&gt;Each mechanism protects at its own level&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;h2 up-at-unpause pause&gt;&lt;span&gt;Capsules: access, _, _&lt;/span&gt;&lt;/h2&gt;
+&lt;div pause&gt;&lt;/div&gt;
+&lt;p&gt;&lt;span&gt;Access is &lt;/span&gt;&lt;code&gt;@ uncontended&lt;/code&gt;&lt;span&gt;, but &lt;/span&gt;&lt;code&gt;fork_join2&lt;/code&gt;&lt;span&gt; expects a &lt;/span&gt;&lt;code&gt;@ portable&lt;/code&gt;&lt;span&gt; (or at least &lt;/span&gt;&lt;code&gt;@ shareable&lt;/code&gt;&lt;span&gt;) function&lt;/span&gt;&lt;/p&gt;
+&lt;div pause&gt;&lt;/div&gt;
+&lt;pre&gt;&lt;code class=&quot;language-ocaml&quot;&gt;let increment ~(access : 'k Capsule.Access.t) capsule_ref =
+  let ref = Capsule.Data.unwrap ~access capsule_ref in
+  ref := !ref + 1
+;;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div pause&gt;&lt;/div&gt;
+&lt;pre&gt;&lt;code class=&quot;language-ocaml&quot;&gt;let parallel_increment parallel ~(access : 'k Capsule.Access.t) =
+  let capsule_ref = Capsule.Data.create (fun () -&amp;gt; ref 0) in
+  Parallel.fork_join2 parallel
+    (fun _ -&amp;gt; increment ~access capsule_ref)
+(*                       ^^^^^^                            *)
+(* This value is contended but expected to be uncontended. *)
+    (fun _ -&amp;gt; increment ~access capsule_ref)
+;;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;h2 up-at-unpause pause&gt;&lt;span&gt;Capsules: _, password, _&lt;/span&gt;&lt;/h2&gt;
+&lt;div pause&gt;&lt;/div&gt;
+&lt;p&gt;&lt;span&gt;Password is &lt;/span&gt;&lt;code&gt;@ local&lt;/code&gt;&lt;span&gt;, but &lt;/span&gt;&lt;code&gt;fork_join2&lt;/code&gt;&lt;span&gt; expects a &lt;/span&gt;&lt;code&gt;@ global&lt;/code&gt;&lt;span&gt; function&lt;/span&gt;&lt;/p&gt;
+&lt;div pause&gt;&lt;/div&gt;
+&lt;pre&gt;&lt;code class=&quot;language-ocaml&quot;&gt;let increment ~(password : 'k Capsule.Password.t @ local) capsule_ref =
+  Capsule.Prim.access ~password (fun access -&amp;gt;
+    let ref = Capsule.Data.unwrap ~access capsule_ref in
+    ref := !ref + 1)
+  [@nontail]
+;;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div pause&gt;&lt;/div&gt;
+&lt;pre&gt;&lt;code class=&quot;language-ocaml&quot;&gt;let parallel_increment parallel
+      ~(password : 'k Capsule.Password.t @ local) =
+  let capsule_ref = Capsule.Data.create (fun () -&amp;gt; ref 0) in
+  Parallel.fork_join2 parallel
+    (fun _ -&amp;gt; increment ~password capsule_ref)
+(*                       ^^^^^^^^                          *)
+(* The value password is local, so cannot be used inside a *)
+(* function that might escape.                             *)
+    (fun _ -&amp;gt; increment ~password capsule_ref)
+  [@nontail]
+;;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;h2 up-at-unpause pause&gt;&lt;span&gt;Capsules: _, _, key&lt;/span&gt;&lt;/h2&gt;
+&lt;div pause&gt;&lt;/div&gt;
+&lt;p&gt;&lt;span&gt;Key is &lt;/span&gt;&lt;code&gt;@ unique&lt;/code&gt;&lt;span&gt;, so can only be passed to one branch of &lt;/span&gt;&lt;code&gt;fork_join2&lt;/code&gt;&lt;span&gt; (ownership)&lt;/span&gt;&lt;/p&gt;
+&lt;div pause&gt;&lt;/div&gt;
+&lt;pre&gt;&lt;code class=&quot;language-ocaml&quot;&gt;let parallel_keys parallel =
+  let (P key) = Capsule.create () in
+  let fresh_ref = Capsule.Data.create (fun () -&amp;gt; ref 0) in
+  let _ = Parallel.fork_join2 parallel
+    (fun _ -&amp;gt; Capsule.Prim.Key.with_password key ~f:(fun _ -&amp;gt; ()))
+    (fun _ -&amp;gt; Capsule.Prim.Key.with_password key ~f:(fun _ -&amp;gt; ()))
+(*                                           ^^^           *)
+(* This value is used here, but it is already being used   *)
+(* as unique.                                              *)
+  in ()
+;;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;h2 up-at-unpause pause&gt;&lt;span&gt;Capsules: access, password, key summary&lt;/span&gt;&lt;/h2&gt;
+&lt;div pause&gt;&lt;/div&gt;
+&lt;div role=&quot;region&quot;&gt;&lt;table&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;span&gt;Type&lt;/span&gt;&lt;/th&gt;
+&lt;th&gt;&lt;span&gt;Represents&lt;/span&gt;&lt;/th&gt;
+&lt;th&gt;&lt;span&gt;Provides&lt;/span&gt;&lt;/th&gt;
+&lt;th&gt;&lt;span&gt;Safety Axis&lt;/span&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;'k Access.t&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;span&gt;Proof that &lt;/span&gt;&lt;code&gt;'k&lt;/code&gt;&lt;span&gt; is the current capsule.&lt;/span&gt;&lt;/td&gt;
+&lt;td&gt;&lt;span&gt;Access to data in &lt;/span&gt;&lt;code&gt;'k&lt;/code&gt;&lt;span&gt;.&lt;/span&gt;&lt;/td&gt;
+&lt;td&gt;&lt;span&gt;Contention&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;'k Password.t&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;span&gt;Permission to enter capsule &lt;/span&gt;&lt;code&gt;'k&lt;/code&gt;&lt;span&gt;.&lt;/span&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;'k Access.t&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;span&gt;Locality&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;'k Key.t&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;span&gt;The capsule &lt;/span&gt;&lt;code&gt;'k&lt;/code&gt;&lt;span&gt; itself.&lt;/span&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;'k Password.t&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;span&gt;Uniqueness&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div&gt;
+&lt;h2 up-at-unpause pause&gt;&lt;span&gt;Capsules: mutexes&lt;/span&gt;&lt;/h2&gt;
+&lt;div pause&gt;&lt;/div&gt;
+&lt;pre&gt;&lt;code class=&quot;language-ocaml&quot;&gt;let parallel_mutexes parallel =
+  let (P key) = Capsule.create () in
+  let mutex = Capsule.Mutex.create key in
+  let capsule_ref = Capsule.Data.create (fun () -&amp;gt; ref 0) in
+    Parallel.fork_join2 parallel
+    (fun _ -&amp;gt;
+      Capsule.Mutex.with_lock mutex
+        ~f:(fun password -&amp;gt; increment ~password capsule_ref))
+    (fun _ -&amp;gt;
+      Capsule.Mutex.with_lock mutex
+        ~f:(fun password -&amp;gt; increment ~password capsule_ref))
+;;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;h2 up-at-unpause pause&gt;&lt;span&gt;Capsules: exercises&lt;/span&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;span&gt;Letter C&lt;/span&gt;&lt;/p&gt;
+&lt;ol start=&quot;0&quot;&gt;
+&lt;li&gt;&lt;span&gt;Move ownership with capsules&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span&gt;Counter read-write&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span&gt;Bank&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span&gt;Password manipulation&lt;/span&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;div&gt;
 &lt;h2 up-at-unpause pause&gt;&lt;span&gt;Summary&lt;/span&gt;&lt;/h2&gt;
 &lt;div pause&gt;&lt;/div&gt;
 &lt;p&gt;&lt;span&gt;Compile time&lt;/span&gt;&lt;/p&gt;
@@ -1597,21 +1908,51 @@ let result = Domain.join d
 &lt;div pause&gt;&lt;/div&gt;
 &lt;p&gt;&lt;span&gt;A value contains parts which are &lt;/span&gt;&lt;strong&gt;&lt;span&gt;data&lt;/span&gt;&lt;/strong&gt;&lt;span&gt; and which are &lt;/span&gt;&lt;strong&gt;&lt;span&gt;functions&lt;/span&gt;&lt;/strong&gt;&lt;/p&gt;
 &lt;div pause&gt;&lt;/div&gt;
-&lt;p&gt;&lt;strong&gt;&lt;span&gt;Data&lt;/span&gt;&lt;/strong&gt;&lt;span&gt;: &lt;/span&gt;&lt;code&gt;@ uncontended&lt;/code&gt;&lt;span&gt; &lt;/span&gt;\(\le\)&lt;span&gt; &lt;/span&gt;&lt;code&gt;@ contended&lt;/code&gt;&lt;span&gt; (contention axis)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;span&gt;Data&lt;/span&gt;&lt;/strong&gt;&lt;span&gt;: &lt;/span&gt;&lt;code&gt;@ uncontended&lt;/code&gt;&lt;span&gt; &lt;/span&gt;\(\le\)&lt;span&gt; &lt;/span&gt;&lt;code&gt;@ shared&lt;/code&gt;&lt;span&gt; &lt;/span&gt;\(\le\)&lt;span&gt; &lt;/span&gt;&lt;code&gt;@ contended&lt;/code&gt;&lt;span&gt; (contention axis)&lt;/span&gt;&lt;/p&gt;
 &lt;div pause&gt;&lt;/div&gt;
-&lt;p&gt;&lt;strong&gt;&lt;span&gt;Functions&lt;/span&gt;&lt;/strong&gt;&lt;span&gt;: &lt;/span&gt;&lt;code&gt;@ portable&lt;/code&gt;&lt;span&gt; &lt;/span&gt;\(\le\)&lt;span&gt; &lt;/span&gt;&lt;code&gt;@ nonportable&lt;/code&gt;&lt;span&gt; (portability axis)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;span&gt;Functions&lt;/span&gt;&lt;/strong&gt;&lt;span&gt;: &lt;/span&gt;&lt;code&gt;@ portable&lt;/code&gt;&lt;span&gt; &lt;/span&gt;\(\le\)&lt;span&gt; &lt;/span&gt;&lt;code&gt;@ shareable&lt;/code&gt;&lt;span&gt; &lt;/span&gt;\(\le\)&lt;span&gt; &lt;/span&gt;&lt;code&gt;@ nonportable&lt;/code&gt;&lt;span&gt; (portability axis)&lt;/span&gt;&lt;/p&gt;
 &lt;div pause&gt;&lt;/div&gt;
 &lt;p&gt;&lt;span&gt;Submoding: &lt;/span&gt;\(\le\)&lt;span&gt; means &amp;quot;can be used in place of&amp;quot;&lt;/span&gt;&lt;/p&gt;
 &lt;div pause&gt;&lt;/div&gt;
 &lt;p&gt;&lt;span&gt;Deepness&lt;/span&gt;&lt;/p&gt;
 &lt;div pause&gt;&lt;/div&gt;
-&lt;h2&gt;&lt;span&gt;Summary&lt;/span&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;span&gt;Atomics&lt;/span&gt;&lt;/p&gt;
+&lt;div pause&gt;&lt;/div&gt;
+&lt;p&gt;&lt;span&gt;Capsules (access, password, key; mutex)&lt;/span&gt;&lt;/p&gt;
+&lt;div pause&gt;&lt;/div&gt;
+&lt;p&gt;&lt;span&gt;Other mode axes: locality (&lt;/span&gt;&lt;code&gt;@ local&lt;/code&gt;&lt;span&gt;, &lt;/span&gt;&lt;code&gt;@ global&lt;/code&gt;&lt;span&gt;), uniqueness (&lt;/span&gt;&lt;code&gt;@ unique&lt;/code&gt;&lt;span&gt;, &lt;/span&gt;&lt;code&gt;@ aliased&lt;/code&gt;&lt;span&gt;), linearity (&lt;/span&gt;&lt;code&gt;@ many&lt;/code&gt;&lt;span&gt;, &lt;/span&gt;&lt;code&gt;@ once&lt;/code&gt;&lt;span&gt;)&lt;/span&gt;&lt;/p&gt;
+&lt;div pause&gt;&lt;/div&gt;
+&lt;p&gt;&lt;span&gt;Fork-join framework for spawning domains&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;h2 up-at-unpause pause&gt;&lt;span&gt;Exit survey&lt;/span&gt;&lt;/h2&gt;
+&lt;div&gt;
+&lt;h2 up-at-unpause pause&gt;&lt;span&gt;Next&lt;/span&gt;&lt;/h2&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;span&gt;contention and portability&lt;/span&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;@ shared&lt;/code&gt;&lt;span&gt; and &lt;/span&gt;&lt;code&gt;@ sharable&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;span&gt;atomics&lt;/span&gt;&lt;/li&gt;
-&lt;li&gt;&lt;span&gt;capsules (access, password, key; mutex)&lt;/span&gt;&lt;/li&gt;
-&lt;li&gt;&lt;span&gt;fork-join framework for spawning domains&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span&gt;Didn't cover: parallel sequences, parallel arrrays &lt;/span&gt;&lt;a href=&quot;https://oxcaml.org/documentation/tutorials/intro-to-parallelism-part-2/&quot;&gt;&lt;span&gt;(official tutorial)&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;span&gt;Refresh&lt;/span&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;span&gt;https://github.com/murfel/oxcaml-debunked&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span&gt;My YouTube primer on contention and portability: https://youtu.be/xYk-qTAgLzE&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span&gt;More on capsules: https://oxcaml.org/documentation/parallelism/capsules/&lt;/span&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;span&gt;New perspectives&lt;/span&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://tarides.com/blog/2026-07-15-exploring-static-data-race-freedom-in-oxcaml/&quot;&gt;&lt;span&gt;Carine's article: Exploring data race freedom in OxCaml&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span&gt;Read the original paper: &lt;/span&gt;&lt;a href=&quot;https://dl.acm.org/doi/10.1145/3704859&quot;&gt;&lt;span&gt;A. Linn et al. Data Race Freedom à la Mode&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;span&gt;More&lt;/span&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;span&gt;Explore other modes at &lt;/span&gt;&lt;a href=&quot;https://oxcaml.org&quot;&gt;&lt;span&gt;oxcaml.org&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;span&gt;Ways to connect&lt;/span&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;span&gt;Join OCaml discord https://discord.gg/cCYQbqN #oxcaml channel&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span&gt;https://fun-ocaml.com/ Jan 25-26, 2027 in Bengaluru, India&lt;/span&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;span&gt;Pass it forward&lt;/span&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;span&gt;Give a 'takeaways' talk to your colleagues&lt;/span&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
 &lt;/div&gt;
