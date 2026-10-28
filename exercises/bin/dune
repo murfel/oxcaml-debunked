@@ -2,6 +2,7 @@
  (public_names
   exercises
   a00_stock
+  a01_captured
   add4
   bank
   counter
@@ -16,6 +17,7 @@
  (names
   main
   a00_stock
+  a01_captured
   add4
   bank
   counter
