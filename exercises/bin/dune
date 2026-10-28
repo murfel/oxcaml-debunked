@@ -6,6 +6,7 @@
   a2_applier
   b0_portability
   b1_captured_vs_parameters
+  b2_fork_join
   add4
   bank
   counter
@@ -15,8 +16,7 @@
   capsule_keys_list
   capsules
   capsules_move_ownership
-  stock_usage
-  fork_join)
+  stock_usage)
  (names
   main
   a0_stock
@@ -24,6 +24,7 @@
   a2_applier
   b0_portability
   b1_captured_vs_parameters
+  b2_fork_join
   add4
   bank
   counter
@@ -33,8 +34,7 @@
   capsule_keys_list
   capsules
   capsules_move_ownership
-  stock_usage
-  fork_join)
+  stock_usage)
  (libraries
   exercises
   core
