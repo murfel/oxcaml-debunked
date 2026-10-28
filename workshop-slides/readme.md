@@ -68,8 +68,10 @@ prevent data races in **compile time**, part of type checking.
 **Building blocks** of multidomain computing in OxCaml:
 
 - Mode axes: **contention**, **portability**
-- Synchronization primitives: **atomics**, **capsules**
-- Domain management framework (fork-join pool)
+- Synchronization primitives: **atomics**
+- Code structuring primitives: **capsules**
+- More synchonization primitives: **capsules** with a **mutex**
+- Domain management framework (a scheduler): **fork-join pool**
 
 ---
 
