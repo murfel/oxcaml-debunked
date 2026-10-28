@@ -4,16 +4,20 @@
 
 - Intro ~10 min
 - Motivation and the contention mode ~20 min
-  - Exercises ~15 min
+  - Exercises ~20 min
 - Portability ~20 min
   - Exercises ~30 min
-- Break ~10 min
+- **Break ~10 min**
 - Capsules ~30 min
   - Exercises ~30 min
 
-Total: 2:45
+Total: 2:50
 
 - Discussion and outro ~the rest
+- Bonus
+  - Fork-join scheduler in details
+  - Parallel sequence
+  - Parallel arrays
 
 {pause up}
 ### OxCaml
