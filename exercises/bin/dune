@@ -4,6 +4,7 @@
   a0_stock
   a1_captured
   a2_applier
+  b0_portability
   add4
   bank
   counter
@@ -20,6 +21,7 @@
   a0_stock
   a1_captured
   a2_applier
+  b0_portability
   add4
   bank
   counter
