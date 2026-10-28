@@ -10,7 +10,8 @@
   capsule_keys_list
   capsules
   capsules_move_ownership
-  stock_usage)
+  stock_usage
+  fork_join)
  (names
   main
   add4
@@ -22,7 +23,8 @@
   capsule_keys_list
   capsules
   capsules_move_ownership
-  stock_usage)
+  stock_usage
+  fork_join)
  (libraries
   exercises
   core
