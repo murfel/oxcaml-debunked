@@ -29,16 +29,15 @@ let () =
 
 (* Continue the exercise with f7 and f8 *)
 
-(* TODO(natasha) *)
 module AtomicStock = struct
   type t =
     { ticker : string
-    ; mutable price : float
+    ; mutable price : float [@atomic]
     }
 
   let create ~ticker ~price = { ticker; price }
   let print_ticker { ticker; _ } = Printf.printf "%s\n" ticker
-  let print_price { price; _ } = Printf.printf "%.2f\n" price
+  let print_price t = Printf.printf "%.2f\n" t.price (* sad note: cannot pattern-match on atomic *)
   let set_price t price = t.price <- price
 end
 
