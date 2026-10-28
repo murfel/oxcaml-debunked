@@ -5,7 +5,7 @@ let describe (par : Parallel.t) stock =
     Parallel.fork_join2
       par
       (* stock is captured as shared *)
-      (fun _ ->
+        (fun _ ->
         let ticker = Stock.ticker stock in
         Printf.printf "branch 1: %s %.2f\n%!" ticker (Stock.price stock);
         String.length ticker)
