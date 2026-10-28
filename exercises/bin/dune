@@ -1,9 +1,9 @@
 (executables
  (public_names
   exercises
-  a00_stock
-  a01_captured
-  a02_applier
+  a0_stock
+  a1_captured
+  a2_applier
   add4
   bank
   counter
@@ -17,9 +17,9 @@
   fork_join)
  (names
   main
-  a00_stock
-  a01_captured
-  a02_applier
+  a0_stock
+  a1_captured
+  a2_applier
   add4
   bank
   counter
