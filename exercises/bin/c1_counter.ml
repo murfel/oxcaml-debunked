@@ -1,6 +1,7 @@
 open! Core
 open Await
 
+
 (* A single [int ref] living in a capsule, protected by a mutex. *)
 let counter : int ref Capsule.Sync.With_mutex.t =
   Capsule.Sync.With_mutex.create (fun () -> ref 0)

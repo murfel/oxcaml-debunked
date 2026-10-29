@@ -8,15 +8,16 @@
   b1_captured_vs_parameters
   b2_fork_join
   b3_on_join
+  c0_capsules_move_ownership
+  c1_counter
+  c2_bank
+  c3_password
   add4
-  bank
-  counter
   two_counters
   capsule_keys
   capsule_keys_either
   capsule_keys_list
   capsules
-  capsules_move_ownership
   stock_usage)
  (names
   main
@@ -27,15 +28,16 @@
   b1_captured_vs_parameters
   b2_fork_join
   b3_on_join
+  c0_capsules_move_ownership
+  c1_counter
+  c2_bank
+  c3_password
   add4
-  bank
-  counter
   two_counters
   capsule_keys
   capsule_keys_either
   capsule_keys_list
   capsules
-  capsules_move_ownership
   stock_usage)
  (libraries
   exercises
